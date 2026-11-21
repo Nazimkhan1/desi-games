@@ -1,0 +1,13 @@
+{
+  "name": "Desi Games — देसी गेम्स",
+  "short_name": "Desi Games",
+  "description": "बचपन वाले सारे देसी खेल एक app में — online दोस्तों के साथ या offline।",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#140d26",
+  "theme_color": "#140d26",
+  "lang": "hi",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

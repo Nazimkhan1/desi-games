@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desi Games — देसी गेम्स</title>
+<meta name="theme-color" content="#140d26">
+<meta name="description" content="बचपन वाले सारे देसी खेल एक app में — ऑनलाइन दोस्तों के साथ या ऑफलाइन। Free, बिना login।">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Baloo+Da+2:wght@500;600;700;800&family=Mukta:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+
+<div class="app">
+  <div class="hud">
+    <div class="me-chip"><div class="av">🧑🏽</div><div class="lv">रोहन<small id="lvl">लेवल 7</small></div></div>
+    <div class="spacer"></div>
+    <div class="stat">🪙 120</div>
+    <div class="stat">💎 8</div>
+    <button class="lang-btn" id="langBtn">🌐 <span id="langLbl">हिंदी</span></button>
+  </div>
+  <div class="lang-menu" id="langMenu"></div>
+
+  <main>
+    <section class="hero">
+      <span class="live"><span class="dot"></span> <span id="liveTxt"></span></span>
+      <h1 id="heroTitle"></h1>
+      <p id="heroSub"></p>
+      <div class="hero-btns">
+        <button class="hbtn hbtn-1" id="btnCreate"></button>
+        <button class="hbtn hbtn-2" id="btnJoin"></button>
+      </div>
+    </section>
+    <div class="sec"><h2 id="secTitle"></h2><a id="secAll"></a></div>
+    <div class="grid" id="grid"></div>
+    <p class="note" id="note"></p>
+  </main>
+
+  <nav class="nav">
+    <button class="nb on" data-nav="home"><span class="ni">🏠</span><span class="nt"></span></button>
+    <button class="nb" data-nav="friends"><span class="ni">👥</span><span class="nt"></span></button>
+    <button class="play" id="navPlay">PLAY</button>
+    <button class="nb" data-nav="rank"><span class="ni">🏆</span><span class="nt"></span></button>
+    <button class="nb" data-nav="me"><span class="ni">🙂</span><span class="nt"></span></button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <div class="sheet-in">
+    <div class="s-game"><div class="ic" id="sIc">🐍</div><div><div class="t-hi" id="sHi"></div><div class="t-en" id="sEn"></div></div></div>
+    <button class="mode m-online" id="mOnline"><div class="m-ic">🌐</div><div><div class="m-t" id="mOnlineT"></div><div class="m-s" id="mOnlineS"></div></div><div class="ar">›</div></button>
+    <button class="mode m-pass" id="mPass"><div class="m-ic">📱</div><div><div class="m-t" id="mPassT"></div><div class="m-s" id="mPassS"></div></div><div class="ar">›</div></button>
+    <button class="mode m-ai" id="mAi"><div class="m-ic">🤖</div><div><div class="m-t" id="mAiT"></div><div class="m-s" id="mAiS"></div></div><div class="ar">›</div></button>
+  </div>
+</div>
+
+<div class="room" id="room">
+  <div class="room-top"><button class="ibtn" id="roomBack">‹</button><h2 id="rTitle"></h2></div>
+  <div class="room-mid">
+    <div class="rg" id="rIc">🐍</div><h3 id="rGame"></h3><div class="sub" id="rSub"></div>
+    <div class="code-box"><div class="lbl" id="rCodeLbl"></div><div class="code" id="rCode">7 4 2 9</div></div>
+    <div class="players"><div class="pslot me"><div class="pa">🧑🏽</div><span id="rYou"></span></div><div class="pslot wait"><div class="pa">?</div><span id="rWait"></span></div></div>
+  </div>
+  <div class="room-btns"><button class="rbtn rbtn-wa" id="rWa"></button><button class="rbtn rbtn-ghost" id="rCopy"></button></div>
+</div>
+
+<!-- active game mounts here -->
+<div class="game-root" id="gameRoot">
+  <div class="game-bar"><button class="ibtn" id="gameBack">‹</button><h2 id="gameTitle"></h2><span class="mode-pill" id="gameMode"></span></div>
+  <div class="game-wrap" id="gameWrap"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="i18n.js"></script>
+<script src="games/kattam-katti.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
