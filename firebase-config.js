@@ -12,4 +12,12 @@
  *   appId: "1:xxxx:web:xxxx"
  * };
  */
-window.DG_FIREBASE_CONFIG = null;
+window.DG_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAv_1D0gLt4HqIM_lBQ_W2L_lJildJRqE4",
+  authDomain: "desi-games-219a5.firebaseapp.com",
+  databaseURL: "https://desi-games-219a5-default-rtdb.firebaseio.com",
+  projectId: "desi-games-219a5",
+  storageBucket: "desi-games-219a5.firebasestorage.app",
+  messagingSenderId: "697205476979",
+  appId: "1:697205476979:web:96f81ad5fa1913af21a406"
+};

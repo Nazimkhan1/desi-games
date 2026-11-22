@@ -87,7 +87,7 @@
     var cEl = $('rCode'); cEl.textContent = room.code.split('').join(' '); cEl.dataset.raw = room.code;
     var started = false;
     room.on('hello', function () {
-      room.send('start', {});
+      room.send('start', { game: roomGame.id });
       if (started) return; started = true;
       var g2 = $('rGuest'); g2.classList.remove('wait'); g2.querySelector('.pa').textContent = '🧑🏻'; g2.querySelector('span').textContent = nt().joined;
       setTimeout(function () { launchOnline(roomGame, 'host', room); }, 550);
@@ -112,10 +112,15 @@
     Promise.resolve(DG.net.join(code)).then(function (r) {
       $('rJoinBtn').disabled = false;
       if (!r) { toast(nt().nf); return; }
-      room = r; roomGame = gameById(r.gameId);
-      r.on('start', function () { launchOnline(roomGame, 'guest', r); });
+      room = r;
+      var launched = false;
+      r.on('start', function (m) {
+        if (launched) return; launched = true;
+        var g = (r.gameId && gameById(r.gameId)) || gameById(m && m.game) || onlineGame();
+        roomGame = g; launchOnline(g, 'guest', r);
+      });
       r.send('hello', {});
-      setTimeout(function () { if ($('room').classList.contains('show')) launchOnline(roomGame, 'guest', r); }, 1400);
+      setTimeout(function () { if (!launched && $('room').classList.contains('show')) { toast(nt().nf); closeRoom(); } }, 6000);
     }, function () { $('rJoinBtn').disabled = false; toast(nt().nf); });
   }
 

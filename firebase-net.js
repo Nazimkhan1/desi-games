@@ -25,7 +25,9 @@
   })();
 
   function realRoom(db, code, role, gameId) {
-    var myId = (firebase.auth().currentUser && firebase.auth().currentUser.uid) || Math.random().toString(36).slice(2, 8);
+    // Per-instance id for message filtering (NOT the auth uid — two tabs in one
+    // browser share the same anonymous uid, which would drop each other's messages).
+    var myId = 'c' + Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
     var msgs = db.ref('rooms/' + code + '/msgs');
     var handlers = {};
     msgs.on('child_added', function (snap) {
@@ -61,12 +63,11 @@
   }
 
   function join(code) {
+    // No meta gate (avoids a host-write vs guest-read race). Just join the channel;
+    // the host's 'start' reply carries the gameId, and app.js times out if none comes.
     return ready.then(function (db) {
       if (!db) return null;
-      return db.ref('rooms/' + code + '/meta').once('value').then(function (snap) {
-        if (!snap.exists()) return null;
-        return realRoom(db, code, 'guest', (snap.val() || {}).game);
-      });
+      return realRoom(db, code, 'guest', null);
     });
   }
 
