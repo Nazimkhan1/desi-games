@@ -1,46 +1,43 @@
-# Desi Games — Kaam ka hisaab (TASK)
+# Desi Games — Progress (kitna hua)
 
-_Last updated: 2026-11-22_
+_Updated: 2026-11-22_
 
-Ek app jisme bachpan wale saare desi games — **online** (dost ke saath room-code se) aur **offline** (Pass & Play + vs Computer). 4 bhasha: हिंदी · English · বাংলা · Hinglish. Free, bina login. PWA → baad me Android APK.
-
-## Run (local)
-```
-cd ~/www/desi-games
-python3 -m http.server 7878 --bind 127.0.0.1
-# browser: http://localhost:7878
-```
-Note: **Chrome port 6666 block karता hai** (unsafe port) — 7878 / 8080 / 5173 use karo.
+**Live:** https://desi-games.nextgrade.in (GitHub Pages, repo public-for-now → baad mein private; HTTPS on)
+**Repo:** github.com/Nazimkhan1/desi-games
+**Local run:** `cd ~/www/desi-games && python3 -m http.server 7878` → http://localhost:7878
+(Chrome port 6666 block karta hai — 7878/8080 use karo.)
 
 ---
 
-## ✅ Ho gaya
-- [x] App shell — dark game-lobby UI (home, hero, game grid, bottom nav)
-- [x] 4-language switcher (localStorage me yaad rehta hai)
-- [x] Mode sheet (Online / Pass & Play / vs Computer)
-- [x] Room-code screen (UI preview + WhatsApp/copy share)
-- [x] PWA: manifest + service worker (offline shell) + icon
-- [x] **Game 1 — कट्टम-कट्टी (Tic-Tac-Toe):** Pass & Play + vs Computer (minimax AI)
-- [x] **Game 2 — साँप-सीढ़ी (Snakes & Ladders):** 2-player board, snakes+ladders, dice, Pass & Play + vs Computer
-- [x] GitHub pe push (private): github.com/Nazimkhan1/desi-games
+## ✅ HO GAYA
+- [x] App shell + bottom nav + mode sheet + room screen
+- [x] **4 bhasha** switcher (हिंदी · English · বাংলা · Hinglish), localized brand wordmark
+- [x] **Bespoke design** — "Indigo Night · Brass & Marigold" (pachisi emblem, jali pattern, unified icon chips; NOT generic AI look)
+- [x] PWA (manifest + service worker, offline shell) + SVG icon
+- [x] **Deploy live** on desi-games.nextgrade.in (GitHub Pages; DNS: `desi-games` CNAME `nazimkhan1.github.io` DNS-only)
 
-## 🔧 Abhi / Agla kaam
-- [ ] **Online multiplayer** — room create/join by code, turn sync
-      - Architecture: transport-abstracted (abhi local, baad me Firebase)
-      - Firebase (free Spark plan): Realtime DB + Anonymous Auth — `/rooms/{code}` me game state
-      - **Tumhe karna hai:** ek free Firebase project banana + config dena (main code ready rakhता hoon)
-- [ ] Aur games: बाघ-बकरी, नौ-गोटी, लूडो, कैरम, पतंग काटो … (same `games/<id>.js` pattern)
-- [ ] Android APK (Capacitor/TWA) + Play Store + AdMob (kamai)
+### Games (4)
+- [x] **कट्टम-कट्टी** (Tic-Tac-Toe) — Pass&Play + vs Computer (minimax) + **ONLINE** (Firebase)
+- [x] **साँप-सीढ़ी** (Snakes & Ladders) — Pass&Play + vs Computer
+- [x] **क्रिकेट** — Pass&Play + vs Computer: toss, dynamic overs (default 2), bowler pace/spin + delivery, batsman sees incoming ball + picks shot, matchup+risk engine (dot/4/6/OUT, big shot = six/out), proper animated SVG ground (ball + stumps), 2 innings + chase, win by runs/wickets
 
-## 🧱 Code structure
-- `index.html` — shell markup + script tags
-- `app.css` — lobby + game-screen styles (dark theme tokens)
-- `i18n.js` — `window.DG`: games catalogue + 4-lang strings
-- `app.js` — lobby logic, i18n, game launcher
-- `games/<id>.js` — har game ek module: `DG.register(id, { mount(wrap,{mode,onExit}) })`
-- `manifest.webmanifest`, `sw.js`, `icons/` — PWA
+### Online (Firebase) — kattam done
+- [x] Firebase project `desi-games-219a5` (Realtime DB + Anonymous Auth, Spark free)
+- [x] `net.js` LocalTransport (2 tabs) + `firebase-net.js` FirebaseTransport (cross-device), same room API
+- [x] Authorized domain `desi-games.nextgrade.in` added in Firebase
 
-### Naya game add karne ka tarीka
-1. `games/<id>.js` banao → `DG.register('<id>', { mount(wrap, opts){ ... } })`
-2. `i18n.js` ki GAMES me us id pe `play:1` set karo (naam pehle se hai)
-3. `index.html` me `<script src="games/<id>.js">` add karo (app.js se pehle)
+---
+
+## ⏳ BAAKI / AGLA KAAM
+- [ ] **Cricket ONLINE** (alag phone) — engine ready, bas dono ke hidden picks sync karne hain
+- [ ] **साँप-सीढ़ी online**
+- [ ] Cricket: named teams / 11 players / batting order; balance tuning
+- [ ] Aur games: Ludo, बाघ-बकरी, नौ-गोटी, कैरम, पतंग…
+- [ ] Repo **private** karna (Pages chalta rahega, hisab jaisе)
+- [ ] Android **APK** (Capacitor/TWA) + **AdMob** (kamai)
+
+## 🧱 Code map
+- `index.html` · `app.css` · `app.js` (lobby/i18n/launcher) · `i18n.js` (DG: games + strings)
+- `games/<id>.js` — `DG.register(id,{mount(wrap,{mode,net,role,onExit})})`
+- `net.js` + `firebase-net.js` + `firebase-config.js` — online
+- Naya game: `games/<id>.js` + GAMES me `play:1` + `index.html` me script tag
