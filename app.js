@@ -60,19 +60,76 @@
   }
   function closeSheet() { $('scrim').classList.remove('show'); $('sheet').classList.remove('show'); }
 
-  /* ---------- room (online preview; real sync = Phase 2 / Firebase) ---------- */
-  function randCode() { var s = ''; for (var i = 0; i < 4; i++) s += Math.floor(Math.random() * 10); return s; }
-  function openRoom(g, mode) {
-    closeSheet(); roomMode = mode; var game = g || CUR || DG.GAMES[0]; CUR = game;
-    set('rIc', game.ic); set('rGame', DG.gname(game));
-    var code = randCode(); var cEl = $('rCode'); cEl.textContent = code.split('').join(' '); cEl.dataset.raw = code;
+  /* ---------- online room (room-code multiplayer; local transport now, Firebase later) ---------- */
+  var NETT = {
+    hi:{ join:'जुड़ो', nf:'❌ यह रूम नहीं मिला', wait:'दोस्त का इंतज़ार…', paste:'4 अंक का कोड डालो', joined:'जुड़ गया ✓' },
+    en:{ join:'Join', nf:'❌ Room not found', wait:'Waiting for friend…', paste:'Enter the 4-digit code', joined:'Joined ✓' },
+    hinglish:{ join:'Judo', nf:'❌ Yeh room nahi mila', wait:'Dost ka intezaar…', paste:'4 digit ka code daalo', joined:'Jud gaya ✓' },
+    bn:{ join:'যোগ দাও', nf:'❌ রুম পাওয়া যায়নি', wait:'বন্ধুর অপেক্ষা…', paste:'৪ সংখ্যার কোড দাও', joined:'যোগ হয়েছে ✓' }
+  };
+  function nt() { return NETT[DG.lang] || NETT.en; }
+  var room = null, roomGame = null;
+  function gameById(id) { for (var i = 0; i < DG.GAMES.length; i++) if (DG.GAMES[i].id === id) return DG.GAMES[i]; return DG.GAMES[0]; }
+  function onlineGame() { for (var i = 0; i < DG.GAMES.length; i++) if (DG.GAMES[i].online) return DG.GAMES[i]; return DG.GAMES[0]; }
+  function showRoom() { $('room').classList.add('show'); }
+  function closeRoom() { $('room').classList.remove('show'); if (room) { try { room.close(); } catch (e) {} room = null; } }
+
+  function startCreate(g) {
+    closeSheet();
+    var game = (g && g.online) ? g : onlineGame();
+    CUR = game; roomMode = 'create'; roomGame = game;
     var t = DG.t();
-    set('rTitle', mode === 'join' ? t.roomJoin : t.roomCreated);
-    set('rSub', mode === 'join' ? t.enterCode : t.sendCode);
-    $('room').classList.add('show');
-    toast(t.tOnlineSoon);
+    set('rIc', game.ic); set('rGame', DG.gname(game));
+    set('rTitle', t.roomCreated); set('rSub', t.sendCode); set('rWait', nt().wait);
+    $('codeBox').classList.remove('hide'); $('rPlayers').classList.remove('hide'); $('rShareBtns').classList.remove('hide'); $('joinBox').classList.remove('show');
+    var gs = $('rGuest'); gs.classList.add('wait'); gs.querySelector('.pa').textContent = '?';
+    room = DG.net.create(game.id);
+    var cEl = $('rCode'); cEl.textContent = room.code.split('').join(' '); cEl.dataset.raw = room.code;
+    var started = false;
+    room.on('hello', function () {
+      room.send('start', {});
+      if (started) return; started = true;
+      var g2 = $('rGuest'); g2.classList.remove('wait'); g2.querySelector('.pa').textContent = '🧑🏻'; g2.querySelector('span').textContent = nt().joined;
+      setTimeout(function () { launchOnline(roomGame, 'host', room); }, 550);
+    });
+    showRoom();
   }
-  function closeRoom() { $('room').classList.remove('show'); }
+
+  function startJoin() {
+    closeSheet(); roomMode = 'join';
+    var t = DG.t();
+    set('rIc', '🔑'); set('rGame', t.roomJoin); set('rTitle', t.roomJoin); set('rSub', t.enterCode);
+    $('codeBox').classList.add('hide'); $('rPlayers').classList.add('hide'); $('rShareBtns').classList.add('hide'); $('joinBox').classList.add('show');
+    $('rJoinBtn').textContent = nt().join; $('rJoinInput').value = '';
+    showRoom();
+    setTimeout(function () { try { $('rJoinInput').focus(); } catch (e) {} }, 300);
+  }
+
+  function doJoin() {
+    var code = ($('rJoinInput').value || '').replace(/\D/g, '').slice(0, 4);
+    if (code.length < 4) { toast(nt().paste); return; }
+    $('rJoinBtn').disabled = true;
+    Promise.resolve(DG.net.join(code)).then(function (r) {
+      $('rJoinBtn').disabled = false;
+      if (!r) { toast(nt().nf); return; }
+      room = r; roomGame = gameById(r.gameId);
+      r.on('start', function () { launchOnline(roomGame, 'guest', r); });
+      r.send('hello', {});
+      setTimeout(function () { if ($('room').classList.contains('show')) launchOnline(roomGame, 'guest', r); }, 1400);
+    }, function () { $('rJoinBtn').disabled = false; toast(nt().nf); });
+  }
+
+  function launchOnline(game, role, net) {
+    $('room').classList.remove('show');
+    CUR = game;
+    var t = DG.t(), mp = t.online_t.split('—');
+    set('gameTitle', DG.gname(game)); set('gameMode', mp[1] ? mp[1].trim() : 'Online');
+    var factory = DG.getGame(game.id);
+    var wrap = $('gameWrap'); wrap.innerHTML = '';
+    activeGame = factory.mount(wrap, { mode: 'online', game: game, net: net, role: role, onExit: exitOnline });
+    $('gameRoot').classList.add('show');
+  }
+  function exitOnline() { if (room) { try { room.close(); } catch (e) {} room = null; } exitGame(); }
 
   /* ---------- game launcher ---------- */
   function launchGame(game, mode) {
@@ -111,15 +168,17 @@
   /* ---------- wire up ---------- */
   $('langBtn').onclick = function (e) { e.stopPropagation(); $('langMenu').classList.toggle('show'); };
   document.addEventListener('click', function () { $('langMenu').classList.remove('show'); });
-  $('btnCreate').onclick = function () { openRoom(null, 'create'); };
-  $('btnJoin').onclick = function () { openRoom(null, 'join'); };
-  $('navPlay').onclick = function () { openRoom(null, 'create'); };
+  $('btnCreate').onclick = function () { startCreate(null); };
+  $('btnJoin').onclick = function () { startJoin(); };
+  $('navPlay').onclick = function () { startCreate(null); };
   $('secAll').onclick = function () { toast(DG.t().tListSoon); };
   $('scrim').onclick = closeSheet;
-  $('mOnline').onclick = function () { openRoom(CUR, 'create'); };
+  $('mOnline').onclick = function () { if (CUR && CUR.online) startCreate(CUR); else toast(DG.t().tOnlineSoon); };
   $('mPass').onclick = function () { launchGame(CUR, 'pass'); };
   $('mAi').onclick = function () { launchGame(CUR, 'ai'); };
   $('roomBack').onclick = closeRoom;
+  $('rJoinBtn').onclick = function () { doJoin(); };
+  $('rJoinInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') doJoin(); });
   $('rWa').onclick = function () { copyText(DG.t().invite(DG.gname(CUR || DG.GAMES[0]), $('rCode').dataset.raw || '7429'), DG.t().tInvite); };
   $('rCopy').onclick = function () { copyText($('rCode').dataset.raw || '', DG.t().tCopied); };
   $('gameBack').onclick = exitGame;

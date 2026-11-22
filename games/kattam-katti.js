@@ -38,21 +38,29 @@
 
   DG.register('kattam', {
     mount: function (wrap, opts) {
-      var mode = opts.mode; // 'pass' | 'ai'
+      var mode = opts.mode;                 // 'pass' | 'ai' | 'online'
+      var net = opts.net || null;
+      var myMark = (mode==='online') ? (opts.role==='host' ? 'X' : 'O') : null;
       var board, turn, over, cells = [];
       var chip = document.createElement('div'); chip.className = 'turn-chip';
       var boardEl = document.createElement('div'); boardEl.className = 'kk-board';
-      var area = document.createElement('div'); // holds board or result
+      var area = document.createElement('div');
       area.style.display='flex'; area.style.flexDirection='column'; area.style.alignItems='center'; area.style.gap='18px';
       wrap.appendChild(chip); wrap.appendChild(area); area.appendChild(boardEl);
 
       function markGlyph(m){ return m==='X' ? '✕' : '◯'; }
-      function label(m){ var t=DG.t(); if(mode==='ai'){ return m==='X' ? t.you : t.computer; } return m==='X' ? t.p1 : t.p2; }
+      function label(m){ var t=DG.t();
+        if (mode==='online') return m===myMark ? t.you : t.navFriends;
+        if (mode==='ai') return m==='X' ? t.you : t.computer;
+        return m==='X' ? t.p1 : t.p2;
+      }
+      function myTurnNow(){ return mode==='online' ? (turn===myMark) : (mode==='ai' ? turn==='X' : true); }
 
       function paintTurn(){
         var t=DG.t(); var col = turn==='X' ? 'var(--brand2)' : 'var(--cyan)';
+        var mine = (mode==='ai' && turn==='X') || (mode==='online' && turn===myMark);
         chip.innerHTML = '<span class="mk" style="background:'+col+'"></span>'+
-          (mode==='ai' && turn==='X' ? t.yourTurn(markGlyph('X')) : t.turnOf(label(turn), markGlyph(turn)));
+          (mine ? t.yourTurn(markGlyph(turn)) : t.turnOf(label(turn), markGlyph(turn)));
       }
 
       function reset(){
@@ -64,6 +72,7 @@
         })(i); }
         paintTurn();
       }
+      function requestReset(){ if (mode==='online' && net) net.send('reset', {}); reset(); }
 
       function render(){
         for (var i=0;i<9;i++){ var c=cells[i]; c.textContent = board[i]?markGlyph(board[i]):''; c.className='kk-cell'+(board[i]?(' '+board[i].toLowerCase()+' dis'):''); }
@@ -74,13 +83,14 @@
         var t=DG.t(), txt;
         if (!w) txt = t.drawRes;
         else if (mode==='ai') txt = (w.mark==='X') ? t.youWin : t.youLose;
+        else if (mode==='online') txt = (w.mark===myMark) ? t.youWin : t.youLose;
         else txt = t.wins(label(w.mark));
         if (w){ w.line.forEach(function(idx){ cells[idx].classList.add('win'); }); }
         setTimeout(function(){
           var r=document.createElement('div'); r.className='kk-result';
           r.innerHTML='<div class="rt">'+txt+'</div>';
           var acts=document.createElement('div'); acts.className='kk-actions';
-          var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=reset;
+          var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=requestReset;
           var exit=document.createElement('button'); exit.className='kk-btn ghost'; exit.textContent=t.exitGame; exit.onclick=function(){ opts.onExit && opts.onExit(); };
           acts.appendChild(again); acts.appendChild(exit); r.appendChild(acts);
           area.innerHTML=''; area.appendChild(boardEl); area.appendChild(r);
@@ -88,13 +98,17 @@
         }, w?650:250);
       }
 
-      function play(i){
-        if (over || board[i]) return;
-        if (mode==='ai' && turn!=='X') return; // only human taps in ai mode
+      function place(i, fromRemote){
         board[i]=turn; render();
+        if (mode==='online' && !fromRemote && net) net.send('move', {i:i});
         var w=winner(board); if (w || full(board)) return finish(w);
         turn = turn==='X' ? 'O' : 'X'; paintTurn();
         if (mode==='ai' && turn==='O'){ aiTurn(); }
+      }
+      function play(i){
+        if (over || board[i]) return;
+        if (!myTurnNow()) return;
+        place(i, false);
       }
 
       function aiTurn(){
@@ -105,6 +119,11 @@
           var w=winner(board); if (w || full(board)) return finish(w);
           turn='X'; paintTurn();
         }, 480);
+      }
+
+      if (mode==='online' && net){
+        net.on('move', function(m){ if (over || board[m.i]) return; place(m.i, true); });
+        net.on('reset', function(){ reset(); });
       }
 
       reset();

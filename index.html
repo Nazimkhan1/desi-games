@@ -63,10 +63,11 @@
   <div class="room-top"><button class="ibtn" id="roomBack">‹</button><h2 id="rTitle"></h2></div>
   <div class="room-mid">
     <div class="rg" id="rIc">🐍</div><h3 id="rGame"></h3><div class="sub" id="rSub"></div>
-    <div class="code-box"><div class="lbl" id="rCodeLbl"></div><div class="code" id="rCode">7 4 2 9</div></div>
-    <div class="players"><div class="pslot me"><div class="pa">🧑🏽</div><span id="rYou"></span></div><div class="pslot wait"><div class="pa">?</div><span id="rWait"></span></div></div>
+    <div class="code-box" id="codeBox"><div class="lbl" id="rCodeLbl"></div><div class="code" id="rCode">7 4 2 9</div></div>
+    <div class="join-box" id="joinBox"><input id="rJoinInput" inputmode="numeric" maxlength="4" placeholder="– – – –" aria-label="room code"><button class="rbtn rbtn-wa" id="rJoinBtn"></button></div>
+    <div class="players" id="rPlayers"><div class="pslot me"><div class="pa">🧑🏽</div><span id="rYou"></span></div><div class="pslot wait" id="rGuest"><div class="pa">?</div><span id="rWait"></span></div></div>
   </div>
-  <div class="room-btns"><button class="rbtn rbtn-wa" id="rWa"></button><button class="rbtn rbtn-ghost" id="rCopy"></button></div>
+  <div class="room-btns" id="rShareBtns"><button class="rbtn rbtn-wa" id="rWa"></button><button class="rbtn rbtn-ghost" id="rCopy"></button></div>
 </div>
 
 <!-- active game mounts here -->
@@ -77,7 +78,10 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="firebase-config.js"></script>
 <script src="i18n.js"></script>
+<script src="net.js"></script>
+<script src="firebase-net.js"></script>
 <script src="games/kattam-katti.js"></script>
 <script src="games/saanp-seedhi.js"></script>
 <script src="app.js"></script>
