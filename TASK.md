@@ -16,9 +16,10 @@ _Updated: 2026-11-22_
 - [x] PWA (manifest + service worker, offline shell) + SVG icon
 - [x] **Deploy live** on desi-games.nextgrade.in (GitHub Pages; DNS: `desi-games` CNAME `nazimkhan1.github.io` DNS-only)
 
-### Games (4)
+### Games (5)
 - [x] **कट्टम-कट्टी** (Tic-Tac-Toe) — Pass&Play + vs Computer (minimax) + **ONLINE** (Firebase)
 - [x] **साँप-सीढ़ी** (Snakes & Ladders) — Pass&Play + vs Computer
+- [x] **लूडो** (Ludo) — 2/3/4 khiladi, Pass&Play + vs Computer (smart AI: kaatna, ★ safe, bachna); 6 se bahar, 6/kaat/ghar = ek aur baari, teen 6 = baari gayi, exact number se ghar (22 Nov)
 - [x] **क्रिकेट** — Pass&Play + vs Computer: toss, dynamic overs (default 2), bowler pace/spin + delivery, batsman sees incoming ball + picks shot, matchup+risk engine (dot/4/6/OUT, big shot = six/out), proper animated SVG ground (ball + stumps), 2 innings + chase, win by runs/wickets
 
 ### Online (Firebase) — kattam done
@@ -32,9 +33,13 @@ _Updated: 2026-11-22_
 - [ ] **Cricket ONLINE** (alag phone) — engine ready, bas dono ke hidden picks sync karne hain
 - [ ] **साँप-सीढ़ी online**
 - [ ] Cricket: named teams / 11 players / batting order; balance tuning
-- [ ] Aur games: Ludo, बाघ-बकरी, नौ-गोटी, कैरम, पतंग…
+- [ ] **Ludo online** (2–4 phone)
+- [ ] Aur games: बाघ-बकरी, नौ-गोटी, कैरम, पतंग…
 - [ ] Repo **private** karna (Pages chalta rahega, hisab jaisе)
 - [ ] Android **APK** (Capacitor/TWA) + **AdMob** (kamai)
+
+## 🔧 Notes
+- `sw.js` ab **network-first** hai (22 Nov): pehle cache-first tha aur kabhi version nahi badla, isliye purane users ko naye games (Cricket, Nau-Goti) dikhte hi nahi the. Ab internet ho to hamesha naya code, offline ho to cache.
 
 ## 🧱 Code map
 - `index.html` · `app.css` · `app.js` (lobby/i18n/launcher) · `i18n.js` (DG: games + strings)

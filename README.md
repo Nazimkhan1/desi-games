@@ -23,7 +23,8 @@ python3 -m http.server 8080
 ## Status
 - ✅ Shell + 4-language switcher + mode sheet + room UI (online preview)
 - ✅ **कट्टम-कट्टी (Tic-Tac-Toe)** — Pass & Play + vs Computer (minimax) working, offline
-- ⏳ More games (साँप-सीढ़ी, Ludo, …) — same `games/<id>.js` pattern
+- ✅ साँप-सीढ़ी, क्रिकेट, नौ-गोटी, लूडो (2–4 players)
+- ⏳ More games — same `games/<id>.js` pattern
 - ⏳ Online multiplayer — Firebase (Realtime DB + anon auth), room-code sync (Phase 2, free tier)
 
 ## Roadmap
