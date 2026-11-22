@@ -2,7 +2,7 @@
    falling back to the cache when there is no internet (pass-play & vs-computer still work). */
 var CACHE = 'desi-games-v2';
 var ASSETS = ['./','./index.html','./app.css','./i18n.js','./app.js','./net.js','./firebase-config.js','./firebase-net.js',
-  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js',
+  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js',
   './manifest.webmanifest','./icons/icon.svg'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function(){ return self.skipWaiting(); })); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return k !== CACHE ? caches.delete(k) : null; })); }).then(function(){ return self.clients.claim(); })); });

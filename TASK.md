@@ -16,9 +16,10 @@ _Updated: 2026-11-22_
 - [x] PWA (manifest + service worker, offline shell) + SVG icon
 - [x] **Deploy live** on desi-games.nextgrade.in (GitHub Pages; DNS: `desi-games` CNAME `nazimkhan1.github.io` DNS-only)
 
-### Games (5)
+### Games (6)
 - [x] **कट्टम-कट्टी** (Tic-Tac-Toe) — Pass&Play + vs Computer (minimax) + **ONLINE** (Firebase)
 - [x] **साँप-सीढ़ी** (Snakes & Ladders) — Pass&Play + vs Computer
+- [x] **बाघ-बकरी** (Bagh-Chal) — 4 bagh vs 20 bakri, Pass&Play + vs Computer (side chuno: bakri ya bagh); AI time-limited search (~0.25s/chaal), 5 khaayi = bagh jeete, koi bagh na hile = bakri jeete, 100 chaal bina khaaye = barabari (22 Nov)
 - [x] **लूडो** (Ludo) — 2/3/4 khiladi, Pass&Play + vs Computer (smart AI: kaatna, ★ safe, bachna); 6 se bahar, 6/kaat/ghar = ek aur baari, teen 6 = baari gayi, exact number se ghar (22 Nov)
 - [x] **क्रिकेट** — Pass&Play + vs Computer: toss, dynamic overs (default 2), bowler pace/spin + delivery, batsman sees incoming ball + picks shot, matchup+risk engine (dot/4/6/OUT, big shot = six/out), proper animated SVG ground (ball + stumps), 2 innings + chase, win by runs/wickets
 
@@ -34,7 +35,7 @@ _Updated: 2026-11-22_
 - [ ] **साँप-सीढ़ी online**
 - [ ] Cricket: named teams / 11 players / batting order; balance tuning
 - [ ] **Ludo online** (2–4 phone)
-- [ ] Aur games: बाघ-बकरी, नौ-गोटी, कैरम, पतंग…
+- [ ] Aur games: कैरम, पतंग…
 - [ ] Repo **private** karna (Pages chalta rahega, hisab jaisе)
 - [ ] Android **APK** (Capacitor/TWA) + **AdMob** (kamai)
 
