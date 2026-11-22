@@ -1,6 +1,6 @@
 # Desi Games — Progress (kitna hua)
 
-_Updated: 2026-11-22_
+_Updated: 2026-11-22 (raat)_
 
 **Live:** https://desi-games.nextgrade.in (GitHub Pages, repo public-for-now → baad mein private; HTTPS on)
 **Repo:** github.com/Nazimkhan1/desi-games
@@ -16,9 +16,10 @@ _Updated: 2026-11-22_
 - [x] PWA (manifest + service worker, offline shell) + SVG icon
 - [x] **Deploy live** on desi-games.nextgrade.in (GitHub Pages; DNS: `desi-games` CNAME `nazimkhan1.github.io` DNS-only)
 
-### Games (7)
+### Games (8)
 - [x] **कट्टम-कट्टी** (Tic-Tac-Toe) — Pass&Play + vs Computer (minimax) + **ONLINE** (Firebase)
 - [x] **साँप-सीढ़ी** (Snakes & Ladders) — Pass&Play + vs Computer
+- [x] **पतंग काटो** (Kite Fight) — chhat se patang, ungli se ghumao; dor se dor bhide = pench, pench mein jo tez ghumaye wo kaate ("Wo kaata!"); pehle 3; vs Computer + ek phone par 2 khiladi ek saath (multi-touch, baayan/daayan aadha) (22 Nov)
 - [x] **कैरम** (Carrom) — 2 khiladi, Pass&Play + vs Computer; asli physics (canvas), slider se striker + gulel jaisa drag; Rani cover, striker foul, aakhri goti tabhi jab Rani dhaki ho, points; AI ghost-ball + simulation, insaani galti ke saath (22 Nov)
 - [x] **बाघ-बकरी** (Bagh-Chal) — 4 bagh vs 20 bakri, Pass&Play + vs Computer (side chuno: bakri ya bagh); AI time-limited search (~0.25s/chaal), 5 khaayi = bagh jeete, koi bagh na hile = bakri jeete, 100 chaal bina khaaye = barabari (22 Nov)
 - [x] **लूडो** (Ludo) — 2/3/4 khiladi, Pass&Play + vs Computer (smart AI: kaatna, ★ safe, bachna); 6 se bahar, 6/kaat/ghar = ek aur baari, teen 6 = baari gayi, exact number se ghar (22 Nov)
@@ -37,7 +38,7 @@ _Updated: 2026-11-22_
 - [ ] Cricket: named teams / 11 players / batting order; balance tuning
 - [ ] **Ludo online** (2–4 phone)
 - [ ] Carrom 4 khiladi (2v2) + online
-- [ ] Aur games: पतंग…
+- [ ] Aur games: चोर-सिपाही, कंचे, गिल्ली-डंडा…
 - [ ] Repo **private** karna (Pages chalta rahega, hisab jaisе)
 - [ ] Android **APK** (Capacitor/TWA) + **AdMob** (kamai)
 
