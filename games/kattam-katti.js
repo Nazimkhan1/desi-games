@@ -105,7 +105,7 @@
           var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=requestReset;
           var exit=document.createElement('button'); exit.className='kk-btn ghost'; exit.textContent=t.exitGame; exit.onclick=function(){ opts.onExit && opts.onExit(); };
           acts.appendChild(again); acts.appendChild(exit); r.appendChild(acts);
-          area.innerHTML=''; area.appendChild(boardEl); area.appendChild(r);
+          area.appendChild(r);
           chip.innerHTML='';
         }, w?650:250);
       }
