@@ -3,6 +3,7 @@ window.DG = (function () {
   var GAMES = [
     { id:'kattam',ic:'⭕', c1:'#19d7c9', c2:'#0e8f8e', p:'2', play:1, online:1, hot:1, n:{hi:'कट्टम-कट्टी',en:'Tic-Tac-Toe',hinglish:'Kattam-Katti',bn:'কাটাকুটি'} },
     { id:'saanp', ic:'🐍', c1:'#36d26a', c2:'#0e8f6e', p:'2', play:1, hot:1, n:{hi:'साँप-सीढ़ी',en:'Snakes & Ladders',hinglish:'Saanp-Seedhi',bn:'সাপ-সিঁড়ি'} },
+    { id:'cricket',ic:'🏏', c1:'#5aa6e8', c2:'#2f6fd6', p:'2', play:1, hot:1, n:{hi:'क्रिकेट',en:'Cricket',hinglish:'Cricket',bn:'ক্রিকেট'} },
     { id:'ludo',  ic:'🎲', c1:'#ff3d6e', c2:'#5b5cff', p:'2-4', hot:1, n:{hi:'लूडो',en:'Ludo',hinglish:'Ludo',bn:'লুডো'} },
     { id:'bagh',  ic:'🐯', c1:'#ff9a1e', c2:'#e5531b', p:'2',        n:{hi:'बाघ-बकरी',en:'Goats & Tigers',hinglish:'Bagh-Bakri',bn:'বাঘ-ছাগল'} },
     { id:'nau',   ic:'⚫', c1:'#9a6bff', c2:'#5b3fd6', p:'2',        n:{hi:'नौ-गोटी',en:'Nine Men’s Morris',hinglish:'Nau-Goti',bn:'নয়-গুটি'} },
