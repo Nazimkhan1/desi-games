@@ -195,15 +195,15 @@
         }
         var a = stringPts(0, kites[0], t), b = stringPts(1, kites[1], t), x = crossing(a, b);
         if (x) {
-          if (!pench.on) { pench.on = true; pench.m = 0; say(X.pench, 1.2); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} }
+          if (!pench.on) { pench.on = true; say(X.pench, 1.2); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} }
           pench.at = x; pench.grace = 0.9; // tangled strings stay tangled for a moment even if they swing apart
         } else if (pench.on) {
           pench.grace -= dt;
-          if (pench.grace <= 0) { pench.on = false; pench.m = 0; }
+          if (pench.grace <= 0) { pench.on = false; pench.m *= 0.6; } // the lead carries over to the next pench
         }
         if (pench.on) {
           var s0 = Math.hypot(kites[0].vx, kites[0].vy), s1 = Math.hypot(kites[1].vx, kites[1].vy);
-          pench.m += (s0 - s1) / 230 * dt * 2.4 + (Math.random() - .5) * dt * .3;
+          pench.m += Math.max(-1, Math.min(1, (s0 - s1) / 60)) * dt * 1.2 + (Math.random() - .5) * dt * .3; // faster kite wins in ~1–2 s
           if (Math.abs(pench.m) >= 1) cut(pench.m > 0 ? 1 : 0);
         }
       }
