@@ -5,7 +5,10 @@
   if (!document.getElementById('kk-style')) {
     var s = document.createElement('style'); s.id = 'kk-style';
     s.textContent =
-      '.kk-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(78vw,300px);}'+
+      '.kk-board{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(78vw,300px);}'+
+      '.kk-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:5;}'+
+      '.kk-line line{stroke:#3a1d08;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:kkdraw .42s .12s ease forwards;}'+
+      '@keyframes kkdraw{to{stroke-dashoffset:0;}}'+
       '.kk-cell{aspect-ratio:1;border:0;cursor:pointer;background:var(--panel);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:18px;display:grid;place-items:center;font-size:clamp(2.4rem,13vw,3.4rem);font-family:var(--font-d);font-weight:800;color:var(--ink-soft);transition:transform .08s,background .15s;}'+
       '.kk-cell:active{transform:scale(.95);} .kk-cell.x{color:var(--brand2);} .kk-cell.o{color:var(--cyan);}'+
       '.kk-cell.win{background:linear-gradient(135deg,var(--brand),var(--gold));color:#2a1030;box-shadow:none;}'+
@@ -85,7 +88,16 @@
         else if (mode==='ai') txt = (w.mark==='X') ? t.youWin : t.youLose;
         else if (mode==='online') txt = (w.mark===myMark) ? t.youWin : t.youLose;
         else txt = t.wins(label(w.mark));
-        if (w){ w.line.forEach(function(idx){ cells[idx].classList.add('win'); }); }
+        if (w){
+          w.line.forEach(function(idx){ cells[idx].classList.add('win'); });
+          var cx=function(i){return (i%3)*33.333+16.666;}, cy=function(i){return Math.floor(i/3)*33.333+16.666;};
+          var a=w.line[0], c=w.line[2], x1=cx(a),y1=cy(a),x2=cx(c),y2=cy(c);
+          var dx=x2-x1,dy=y2-y1,ln=Math.sqrt(dx*dx+dy*dy)||1,ex=dx/ln*11,ey=dy/ln*11;
+          var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+          svg.setAttribute('class','kk-line'); svg.setAttribute('viewBox','0 0 100 100'); svg.setAttribute('preserveAspectRatio','none');
+          svg.innerHTML='<line x1="'+(x1-ex)+'" y1="'+(y1-ey)+'" x2="'+(x2+ex)+'" y2="'+(y2+ey)+'" pathLength="100"/>';
+          boardEl.appendChild(svg);
+        }
         setTimeout(function(){
           var r=document.createElement('div'); r.className='kk-result';
           r.innerHTML='<div class="rt">'+txt+'</div>';

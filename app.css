@@ -134,19 +134,19 @@ main{flex:1;padding:0 16px calc(96px) 16px;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ---------- game screen ---------- */
-.game-root{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;
-  --panel:rgba(44,27,13,.82);--panel-2:rgba(44,27,13,.7);--panel-solid:#2c1b0d;--line:rgba(26,15,6,.5);
-  background:
-    repeating-linear-gradient(90deg, rgba(110,74,32,.07) 0 2px, rgba(110,74,32,0) 2px 7px),
-    repeating-linear-gradient(90deg, rgba(80,52,22,.05) 0 1px, rgba(80,52,22,0) 1px 13px),
-    linear-gradient(90deg,#ead6a7 0%,#ddc48b 34%,#e6d099 64%,#d7bd7f 100%);}
+:root{--wood:repeating-linear-gradient(90deg,rgba(110,74,32,.08) 0 2px,rgba(110,74,32,0) 2px 7px),repeating-linear-gradient(90deg,rgba(80,52,22,.055) 0 1px,rgba(80,52,22,0) 1px 13px),linear-gradient(135deg,#ead6a7,#ddc48b 34%,#e6d099 64%,#d7bd7f);}
+.game-root{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;background:radial-gradient(130% 60% at 50% -10%,#1b2252,var(--bg0s) 50%,var(--bg2));}
 .game-root.show{display:flex;}
-/* wood theme: keep text/boards readable on light wood */
-.game-root .game-bar h2{color:#3a2512;}
-.game-root .ng-hands{color:#4a3016;}
-.game-root .ng-spot{fill:rgba(58,37,18,.6);}
-.game-root .ss-board{background:#2c1b0d;}
-.kk-result .rt,.ng-result .rt{color:#3a2512;}
+/* the PLAYING BOARD is wood; the page around it stays dark */
+.game-root .kk-cell{background:var(--wood);box-shadow:inset 0 0 0 2px rgba(74,49,24,.4);}
+.game-root .kk-cell.x{color:#d6336c;} .game-root .kk-cell.o{color:#0c7d7d;}
+.game-root .ss-board{background:var(--wood);border-color:rgba(74,49,24,.55);}
+.game-root .ss-c{color:#3a2512;box-shadow:inset 0 0 0 1px rgba(74,49,24,.14);}
+.game-root .ss-c.lad{background:rgba(42,150,76,.42);} .game-root .ss-c.sn{background:rgba(196,48,66,.4);}
+.game-root .ss-c .mv{filter:drop-shadow(0 1px 1px rgba(0,0,0,.3));}
+.game-root .ng-board{background:var(--wood);border-radius:16px;box-shadow:var(--shadow);}
+.game-root .ng-sq,.game-root .ng-spoke{stroke:rgba(74,49,24,.6);}
+.game-root .ng-spot{fill:rgba(74,49,24,.6);}
 .game-bar{display:flex;align-items:center;gap:10px;padding:14px 16px 6px;}
 .game-bar h2{font-family:var(--font-d);font-size:1.15rem;margin:0;flex:1;}
 .game-bar .mode-pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.74rem;font-weight:700;color:var(--brass);}

@@ -15,6 +15,9 @@
       '.ss-dice{width:66px;height:66px;border-radius:18px;border:0;cursor:pointer;background:linear-gradient(135deg,#fff,#ffe6c7);color:#2a1030;font-family:var(--font-d);font-weight:800;font-size:2rem;box-shadow:0 8px 18px rgba(0,0,0,.4);display:grid;place-items:center;transition:transform .1s;}'+
       '.ss-dice:active{transform:scale(.92) rotate(-6deg);} .ss-dice:disabled{opacity:.5;cursor:default;}'+
       '.ss-dice.roll{animation:ssr .5s ease;} @keyframes ssr{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}'+
+      '.ss-pips{display:grid;grid-template-columns:repeat(3,10px);grid-template-rows:repeat(3,10px);gap:4px;}'+
+      '.ss-pips span{width:10px;height:10px;display:block;}'+
+      '.ss-pips span.ss-pip{background:#2a1030;border-radius:50%;box-shadow:inset 0 -1px 1px rgba(255,255,255,.25);}'+
       '.ss-players{display:flex;gap:10px;} .ss-pcard{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-family:var(--font-d);font-weight:700;font-size:.82rem;}'+
       '.ss-pcard .d{width:12px;height:12px;border-radius:50%;} .ss-pcard.turn{box-shadow:0 0 0 2px var(--brand);}'+
       '.kk-result{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;} .kk-result .rt{font-family:var(--font-d);font-weight:800;font-size:1.7rem;}'+
@@ -25,6 +28,8 @@
   var LAD = {1:38,4:14,9:31,21:42,28:84,36:44,51:67,71:91,80:100};
   var SNK = {16:6,47:26,49:11,56:53,62:19,64:60,87:24,93:73,95:75,98:78};
   var COL = ['#ff3f86','#45b1ff'];
+  var PIPS = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+  function diceFace(n){ var set=PIPS[n]||[]; var s='<span class="ss-pips">'; for(var i=0;i<9;i++){ s+='<span'+(set.indexOf(i)>=0?' class="ss-pip"':'')+'></span>'; } return s+'</span>'; }
 
   function numAt(r, c){ // display row r (0 top .. 9 bottom), col c (0..9) -> cell number
     var rb = 9 - r; return (rb % 2 === 0) ? rb*10 + c + 1 : rb*10 + (10 - c);
@@ -95,7 +100,7 @@
         rolling=true; dice.classList.add('roll'); renderCards();
         var d = 1 + Math.floor(Math.random()*6);
         setTimeout(function(){
-          dice.classList.remove('roll'); dice.textContent = DG.t().rolled(d);
+          dice.classList.remove('roll'); dice.innerHTML = diceFace(d);
           rolling=false; step(d);
         }, 450);
       }
