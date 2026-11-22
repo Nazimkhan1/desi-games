@@ -23,7 +23,14 @@
       '.ck-dot.r{color:var(--ink);} .ck-dot.b{background:rgba(245,165,36,.18);border-color:var(--marigold);color:var(--marigold);} .ck-dot.w{background:rgba(230,96,74,.2);border-color:var(--vermilion);color:#ff9a7a;}'+
       '.ck-btn{border:0;cursor:pointer;font-family:var(--font-d);font-weight:800;font-size:1.05rem;padding:14px 26px;border-radius:14px;color:#2a1803;background:linear-gradient(135deg,var(--marigold),var(--marigold2));transition:transform .08s;} .ck-btn:active{transform:scale(.96);} .ck-btn.ghost{background:var(--panel);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);}'+
       '.ck-step{display:flex;align-items:center;gap:14px;} .ck-step .n{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;font-family:var(--font-d);font-weight:800;font-size:1.2rem;cursor:pointer;color:var(--ink);} .ck-step .v{font-family:var(--font-d);font-weight:800;font-size:2.2rem;min-width:52px;}'+
-      '.ck-row{display:flex;gap:10px;}';
+      '.ck-row{display:flex;gap:10px;}'+
+      '.ck-field{width:100%;max-width:270px;display:block;margin:0 auto;}'+
+      '.ck-field .grd{fill:#2f7d4f;} .ck-field .grd2{fill:#37935d;opacity:.5;} .ck-field .rope{fill:none;stroke:#f3efe3;stroke-width:2;opacity:.5;} .ck-field .pit{fill:#c9a36a;} .ck-field .crease{stroke:#efe7d4;stroke-width:1.2;opacity:.7;}'+
+      '.ck-field .stump{stroke:#f3efe3;stroke-width:2.4;stroke-linecap:round;} .ck-field .fld{fill:#eae0cf;opacity:.85;}'+
+      '.ck-field .head{fill:#e8c6a0;} .ck-field .body{fill:#f5a524;} .ck-field .bowler .body{fill:#5aa6e8;}'+
+      '.ck-field .bat{stroke:#d9a441;stroke-width:4;stroke-linecap:round;transform-box:fill-box;transform-origin:0% 0%;transition:transform .18s ease;} .ck-field.swing .bat{transform:rotate(-72deg);}'+
+      '.ck-field #ckstumps{transform-box:fill-box;transform-origin:bottom center;transition:transform .32s ease;} .ck-field.out #ckstumps{transform:rotate(18deg);}'+
+      '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}';
     document.head.appendChild(st);
   }
 
@@ -92,6 +99,42 @@
     // weight: safer normally, aggressive when chasing hard
     var pool = chaseHard ? ['loft','pull','drive','loft','pull','cut'] : ['drive','block','cut','drive','sweep','pull','loft'];
     return pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  // ---- cricket ground (SVG) ----
+  function fieldHTML(){
+    var bands='';
+    for (var i=0;i<12;i++){ bands+='<rect x="0" y="'+(i*25)+'" width="300" height="25" fill="'+(i%2?'#2f7d4f':'#37935d')+'"/>'; }
+    return '<svg class="ck-field" id="ckfield" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">'+
+      '<defs><clipPath id="ckclip"><ellipse cx="150" cy="150" rx="146" ry="146"/></clipPath></defs>'+
+      '<g clip-path="url(#ckclip)">'+bands+'</g>'+
+      '<ellipse class="rope" cx="150" cy="150" rx="140" ry="140"/>'+
+      '<ellipse cx="150" cy="152" rx="94" ry="98" fill="none" stroke="#f3efe3" stroke-width="1.3" stroke-dasharray="4 5" opacity="0.45"/>'+
+      '<rect class="pit" x="128" y="48" width="44" height="204" rx="3"/>'+
+      '<line class="crease" x1="133" y1="62" x2="167" y2="62"/><line class="crease" x1="133" y1="238" x2="167" y2="238"/>'+
+      '<circle class="fld" cx="66" cy="112" r="4"/><circle class="fld" cx="234" cy="112" r="4"/><circle class="fld" cx="52" cy="186" r="4"/><circle class="fld" cx="248" cy="186" r="4"/><circle class="fld" cx="110" cy="254" r="4"/><circle class="fld" cx="198" cy="58" r="4"/>'+
+      '<g><line class="stump" x1="146" y1="44" x2="146" y2="56"/><line class="stump" x1="150" y1="44" x2="150" y2="56"/><line class="stump" x1="154" y1="44" x2="154" y2="56"/></g>'+
+      '<g id="ckstumps"><line class="stump" x1="146" y1="240" x2="146" y2="252"/><line class="stump" x1="150" y1="240" x2="150" y2="252"/><line class="stump" x1="154" y1="240" x2="154" y2="252"/></g>'+
+      '<g class="bowler"><ellipse class="body" cx="150" cy="84" rx="7" ry="11"/><circle class="head" cx="150" cy="70" r="6"/></g>'+
+      '<g class="batsman"><line class="bat" x1="150" y1="224" x2="162" y2="238"/><ellipse class="body" cx="150" cy="220" rx="7" ry="11"/><circle class="head" cx="150" cy="206" r="6"/></g>'+
+      '<circle class="ball" id="ckball" cx="150" cy="90" r="5"/>'+
+      '</svg>';
+  }
+  function animateBall(result, cb){
+    var field=document.getElementById('ckfield'), ball=document.getElementById('ckball');
+    if (!field || !ball){ return cb && cb(); }
+    ball.style.transition='transform .44s ease-in'; ball.style.transform='translate(0px,126px)';
+    setTimeout(function(){
+      field.classList.add('swing');
+      setTimeout(function(){
+        if (result.out){ field.classList.add('out'); ball.style.transition='transform .34s ease-out'; ball.style.transform='translate(9px,140px)'; }
+        else if (result.runs===6){ ball.style.transition='transform .62s cubic-bezier(.2,.7,.3,1)'; ball.style.transform='translate(60px,-150px)'; }
+        else if (result.runs===4){ ball.style.transition='transform .55s ease-out'; ball.style.transform='translate(-116px,42px)'; }
+        else if (result.runs>0){ ball.style.transition='transform .5s ease-out'; ball.style.transform='translate(56px,30px)'; }
+        else { ball.style.transition='transform .3s ease-out'; ball.style.transform='translate(5px,132px)'; }
+        setTimeout(function(){ cb && cb(); }, 650);
+      }, 150);
+    }, 450);
   }
 
   DG.register('cricket', {
@@ -187,7 +230,9 @@
         pickDelivery();
       }
       function stageWrap(inner){
-        var n=el('div',''); n.appendChild(scoreBoard()); var stage=el('div','ck-stage'); inner.forEach(function(x){stage.appendChild(x);}); n.appendChild(stage); n.appendChild(ballStrip()); return n;
+        var n=el('div',''); n.appendChild(scoreBoard());
+        var fw=el('div',''); fw.innerHTML=fieldHTML(); n.appendChild(fw);
+        var stage=el('div','ck-stage'); inner.forEach(function(x){stage.appendChild(x);}); n.appendChild(stage); n.appendChild(ballStrip()); return n;
       }
       function optionGrid(list, cb){
         var g=el('div','ck-grid');
@@ -199,6 +244,7 @@
         var bowl=S.bat===0?1:0;
         if (!human(bowl)){ S.bowlType=Math.random()<0.5?'spin':'pace'; return pickDelivery(); }
         var n=el('div',''); n.appendChild(scoreBoard());
+        var fw=el('div',''); fw.innerHTML=fieldHTML(); n.appendChild(fw);
         var stage=el('div','ck-stage');
         stage.appendChild(el('div','ck-prompt','⚾ '+pname(bowl)));
         stage.appendChild(el('div','ck-sub',L().bowlType));
@@ -236,7 +282,12 @@
           if (S.innings===2 && S.target!=null){ var need=S.target-S.score[b], bl=totalBalls()-S.balls[b]; chaseHard = need > bl*1.3; }
           return reveal(delivery, aiShot(chaseHard));
         }
-        var n=stageWrap([ el('div','ck-prompt',L().batTurn(pname(b))), optionGrid(SHOTS, function(s){ reveal(delivery, s); }) ]);
+        var dInfo = PACE.concat(SPIN).filter(function(x){return x[0]===delivery;})[0]||['','',''];
+        var n=stageWrap([
+          el('div','ck-prompt','<span style="font-size:1.5rem">'+dInfo[2]+'</span> '+dInfo[1]+'!'),
+          el('div','ck-sub',L().batTurn(pname(b))),
+          optionGrid(SHOTS, function(s){ reveal(delivery, s); })
+        ]);
         wrap.innerHTML=''; var bx=el('div','ck'); bx.appendChild(n); wrap.appendChild(bx);
       }
 
@@ -251,12 +302,14 @@
         var dName=(PACE.concat(SPIN).filter(function(x){return x[0]===delivery;})[0]||['','',''])[1];
         var sName=(SHOTS.filter(function(x){return x[0]===shot;})[0]||['','',''])[1];
         var n=el('div',''); n.appendChild(scoreBoard());
+        var fw=el('div',''); fw.innerHTML=fieldHTML(); n.appendChild(fw);
         var stage=el('div','ck-stage');
-        stage.appendChild(el('div','ck-ball '+cls, txt));
+        var big=el('div','ck-ball '+cls, '');
+        stage.appendChild(big);
         stage.appendChild(el('div','ck-sub','⚾ '+dName+'  ·  🏏 '+sName));
         n.appendChild(stage); n.appendChild(ballStrip());
         wrap.innerHTML=''; var bx=el('div','ck'); bx.appendChild(n); wrap.appendChild(bx);
-        setTimeout(ballFlow, 1500);
+        animateBall(res, function(){ big.textContent=txt; setTimeout(ballFlow, 1050); });
       }
 
       // ---------- innings / match end ----------
