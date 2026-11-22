@@ -32,8 +32,9 @@
       '.ck-field #ckstumps{transform-box:fill-box;transform-origin:bottom center;transition:transform .32s ease;} .ck-field.out #ckstumps{transform:rotate(18deg);}'+
       '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}'+
       '.ck-field .limb{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;fill:none;}'+
-      '.ck-field .bowl-arm{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;transform-box:view-box;transform-origin:150px 79px;}'+
-      '.ck-field .bowler{transform-box:view-box;transform-origin:150px 83px;}'+
+      '.ck-field .batsman .body{fill:#e0493f;}'+
+      '.ck-field .bowl-arm{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;transform-box:view-box;transform-origin:150px 74px;}'+
+      '.ck-field .bowler{transform-box:view-box;transform-origin:150px 79px;}'+
       '.ck-field.bowl .bowler{animation:ckrun .46s ease-in;}'+
       '@keyframes ckrun{0%{transform:translateY(-40px)}25%{transform:translateY(-28px) scaleY(.95)}50%{transform:translateY(-16px) scaleY(1.03)}75%{transform:translateY(-6px) scaleY(.97)}100%{transform:translateY(0)}}'+
       '.ck-field.bowl .bowl-arm{animation:ckbowl .44s .46s ease-in;}'+
@@ -110,25 +111,28 @@
 
   // ---- cricket ground (SVG) ----
   function fieldHTML(){
-    var bands='';
-    for (var i=0;i<12;i++){ bands+='<rect x="0" y="'+(i*25)+'" width="300" height="25" fill="'+(i%2?'#2f7d4f':'#37935d')+'"/>'; }
+    var g='';
+    for (var i=0;i<10;i++){ g+='<rect x="0" y="'+(i*30)+'" width="300" height="30" fill="'+(i%2?'#3a9a5a':'#34914f')+'"/>'; }
     return '<svg class="ck-field" id="ckfield" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">'+
-      '<defs><clipPath id="ckclip"><ellipse cx="150" cy="150" rx="146" ry="146"/></clipPath></defs>'+
-      '<g clip-path="url(#ckclip)">'+bands+'</g>'+
-      '<ellipse class="rope" cx="150" cy="150" rx="140" ry="140"/>'+
-      '<ellipse cx="150" cy="152" rx="94" ry="98" fill="none" stroke="#f3efe3" stroke-width="1.3" stroke-dasharray="4 5" opacity="0.45"/>'+
-      '<rect class="pit" x="128" y="48" width="44" height="204" rx="3"/>'+
-      '<line class="crease" x1="133" y1="62" x2="167" y2="62"/><line class="crease" x1="133" y1="238" x2="167" y2="238"/>'+
-      '<circle class="fld" cx="66" cy="112" r="4"/><circle class="fld" cx="234" cy="112" r="4"/><circle class="fld" cx="52" cy="186" r="4"/><circle class="fld" cx="248" cy="186" r="4"/><circle class="fld" cx="110" cy="254" r="4"/><circle class="fld" cx="198" cy="58" r="4"/>'+
-      '<g><line class="stump" x1="146" y1="44" x2="146" y2="56"/><line class="stump" x1="150" y1="44" x2="150" y2="56"/><line class="stump" x1="154" y1="44" x2="154" y2="56"/></g>'+
-      '<g id="ckstumps"><line class="stump" x1="146" y1="240" x2="146" y2="252"/><line class="stump" x1="150" y1="240" x2="150" y2="252"/><line class="stump" x1="154" y1="240" x2="154" y2="252"/></g>'+
-      '<g class="bowler"><path class="limb" d="M150 90 L145 101 M150 90 L155 101"/><ellipse class="body" cx="150" cy="83" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="70" r="5.5"/><path class="limb" d="M150 79 L139 87"/><line class="bowl-arm" x1="150" y1="79" x2="150" y2="63"/></g>'+
-      '<g class="batsman"><path class="limb" d="M150 219 L143 232 M150 219 L157 232"/><ellipse class="body" cx="150" cy="211" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="198" r="5.5"/><path class="limb" d="M150 207 L162 214 M150 207 L139 213"/><path class="bat" d="M162 214 L173 231"/></g>'+
+      g+
+      '<polygon class="pit" points="136,52 164,52 194,256 106,256"/>'+
+      '<line class="crease" x1="126" y1="70" x2="174" y2="70"/><line class="crease" x1="108" y1="240" x2="192" y2="240"/>'+
+      '<g><line class="stump" x1="147" y1="44" x2="147" y2="54"/><line class="stump" x1="150" y1="44" x2="150" y2="54"/><line class="stump" x1="153" y1="44" x2="153" y2="54"/></g>'+
+      '<g id="ckstumps"><line class="stump" x1="145" y1="246" x2="145" y2="260"/><line class="stump" x1="150" y1="246" x2="150" y2="260"/><line class="stump" x1="155" y1="246" x2="155" y2="260"/></g>'+
+      '<circle class="fld" cx="56" cy="122" r="4"/><circle class="fld" cx="244" cy="122" r="4"/><circle class="fld" cx="36" cy="190" r="4.5"/><circle class="fld" cx="264" cy="190" r="4.5"/><circle class="fld" cx="92" cy="270" r="5"/><circle class="fld" cx="208" cy="270" r="5"/>'+
+      // umpire (far, side)
+      '<g><ellipse cx="200" cy="66" rx="4.5" ry="8" fill="#ededea"/><circle cx="200" cy="55" r="4" fill="#e8c6a0"/><rect x="195.5" y="49" width="9" height="3" rx="1.5" fill="#1f2a44"/></g>'+
+      // bowler (far/top)
+      '<g class="bowler"><path class="limb" d="M150 84 L146 94 M150 84 L154 94"/><ellipse class="body" cx="150" cy="79" rx="5.5" ry="8"/><circle class="head" cx="150" cy="68" r="4.6"/><path class="limb" d="M150 75 L142 81"/><line class="bowl-arm" x1="150" y1="74" x2="150" y2="60"/></g>'+
       '<circle class="ball" id="ckball" cx="150" cy="90" r="5"/>'+
+      // batsman (near/bottom, bigger, red kit, helmet, pads, bat)
+      '<g class="batsman"><rect x="144" y="232" width="5" height="21" rx="2.5" fill="#efe8d6"/><rect x="151" y="232" width="5" height="21" rx="2.5" fill="#efe8d6"/><ellipse class="body" cx="150" cy="222" rx="8" ry="12"/><circle class="head" cx="150" cy="205" r="6.5"/><path d="M143.5 205 A6.5 6.5 0 0 1 156.5 205 Z" fill="#242424"/><path class="limb" d="M150 218 L165 225"/><path class="bat" d="M165 225 L178 251"/></g>'+
+      // wicketkeeper (behind near stumps, gloves)
+      '<g><path class="limb" d="M150 278 L145 286 M150 278 L155 286"/><ellipse cx="150" cy="272" rx="6.5" ry="8.5" fill="#2f9f6a"/><circle class="head" cx="150" cy="261" r="5"/><circle cx="143" cy="268" r="2.6" fill="#eee"/><circle cx="157" cy="268" r="2.6" fill="#eee"/></g>'+
       '</svg>';
   }
-  var FIELDERS = [[66,112],[234,112],[52,186],[248,186],[110,254],[198,58]];
-  var BOUNDARY = [[16,150],[284,150],[150,294],[40,252],[260,252],[40,48],[260,48]];
+  var FIELDERS = [[56,122],[244,122],[36,190],[264,190],[92,270],[208,270]];
+  var BOUNDARY = [[10,150],[290,150],[150,296],[28,250],[272,250],[40,34],[260,34]];
   function mv(ball, tx, ty, dur, ease){ ball.style.transition='transform '+dur+'s '+(ease||'ease-out'); ball.style.transform='translate('+(tx-150)+'px,'+(ty-90)+'px)'; }
   function pulse(fl, s){ if(!fl) return; fl.style.transformBox='fill-box'; fl.style.transformOrigin='center'; fl.style.transition='transform .18s ease-out'; setTimeout(function(){ fl.style.transform='scale('+s+')'; }, 430); setTimeout(function(){ fl.style.transform='scale(1)'; }, 1000); }
   function animateBall(result, cb){
@@ -140,7 +144,7 @@
     void field.offsetWidth;
     field.classList.add('bowl');                 // 1) bowler runs up and bowls
     setTimeout(function(){                         // 2) release: ball travels down the pitch
-      ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,126px)';
+      ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,132px)';
     }, 820);
     setTimeout(function(){                          // 3) ball reaches the batsman
       field.classList.add('swing');                // 4) batsman swings and hits
