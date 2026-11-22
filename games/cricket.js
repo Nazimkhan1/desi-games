@@ -31,7 +31,13 @@
       '.ck-field .bat{stroke:#d9a441;stroke-width:4;stroke-linecap:round;transform-box:fill-box;transform-origin:0% 0%;transition:transform .18s ease;} .ck-field.swing .bat{transform:rotate(-72deg);}'+
       '.ck-field #ckstumps{transform-box:fill-box;transform-origin:bottom center;transition:transform .32s ease;} .ck-field.out #ckstumps{transform:rotate(18deg);}'+
       '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}'+
-      '.ck-field .limb{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;fill:none;}';
+      '.ck-field .limb{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;fill:none;}'+
+      '.ck-field .bowl-arm{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;transform-box:view-box;transform-origin:150px 79px;}'+
+      '.ck-field .bowler{transform-box:view-box;transform-origin:150px 83px;}'+
+      '.ck-field.bowl .bowler{animation:ckrun .46s ease-in;}'+
+      '@keyframes ckrun{0%{transform:translateY(-40px)}25%{transform:translateY(-28px) scaleY(.95)}50%{transform:translateY(-16px) scaleY(1.03)}75%{transform:translateY(-6px) scaleY(.97)}100%{transform:translateY(0)}}'+
+      '.ck-field.bowl .bowl-arm{animation:ckbowl .44s .46s ease-in;}'+
+      '@keyframes ckbowl{0%{transform:rotate(155deg)}55%{transform:rotate(10deg)}100%{transform:rotate(-15deg)}}';
     document.head.appendChild(st);
   }
 
@@ -116,26 +122,40 @@
       '<circle class="fld" cx="66" cy="112" r="4"/><circle class="fld" cx="234" cy="112" r="4"/><circle class="fld" cx="52" cy="186" r="4"/><circle class="fld" cx="248" cy="186" r="4"/><circle class="fld" cx="110" cy="254" r="4"/><circle class="fld" cx="198" cy="58" r="4"/>'+
       '<g><line class="stump" x1="146" y1="44" x2="146" y2="56"/><line class="stump" x1="150" y1="44" x2="150" y2="56"/><line class="stump" x1="154" y1="44" x2="154" y2="56"/></g>'+
       '<g id="ckstumps"><line class="stump" x1="146" y1="240" x2="146" y2="252"/><line class="stump" x1="150" y1="240" x2="150" y2="252"/><line class="stump" x1="154" y1="240" x2="154" y2="252"/></g>'+
-      '<g class="bowler"><path class="limb" d="M150 90 L145 101 M150 90 L155 101"/><ellipse class="body" cx="150" cy="83" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="70" r="5.5"/><path class="limb" d="M150 79 L150 63 M150 79 L139 87"/></g>'+
+      '<g class="bowler"><path class="limb" d="M150 90 L145 101 M150 90 L155 101"/><ellipse class="body" cx="150" cy="83" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="70" r="5.5"/><path class="limb" d="M150 79 L139 87"/><line class="bowl-arm" x1="150" y1="79" x2="150" y2="63"/></g>'+
       '<g class="batsman"><path class="limb" d="M150 219 L143 232 M150 219 L157 232"/><ellipse class="body" cx="150" cy="211" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="198" r="5.5"/><path class="limb" d="M150 207 L162 214 M150 207 L139 213"/><path class="bat" d="M162 214 L173 231"/></g>'+
       '<circle class="ball" id="ckball" cx="150" cy="90" r="5"/>'+
       '</svg>';
   }
+  var FIELDERS = [[66,112],[234,112],[52,186],[248,186],[110,254],[198,58]];
+  var BOUNDARY = [[16,150],[284,150],[150,294],[40,252],[260,252],[40,48],[260,48]];
+  function mv(ball, tx, ty, dur, ease){ ball.style.transition='transform '+dur+'s '+(ease||'ease-out'); ball.style.transform='translate('+(tx-150)+'px,'+(ty-90)+'px)'; }
+  function pulse(fl, s){ if(!fl) return; fl.style.transformBox='fill-box'; fl.style.transformOrigin='center'; fl.style.transition='transform .18s ease-out'; setTimeout(function(){ fl.style.transform='scale('+s+')'; }, 430); setTimeout(function(){ fl.style.transform='scale(1)'; }, 1000); }
   function animateBall(result, cb){
     var field=document.getElementById('ckfield'), ball=document.getElementById('ckball');
     if (!field || !ball){ return cb && cb(); }
-    ball.style.transition='transform .44s ease-in'; ball.style.transform='translate(0px,126px)';
-    setTimeout(function(){
-      field.classList.add('swing');
-      setTimeout(function(){
-        if (result.out){ field.classList.add('out'); ball.style.transition='transform .34s ease-out'; ball.style.transform='translate(9px,140px)'; }
-        else if (result.runs===6){ ball.style.transition='transform .62s cubic-bezier(.2,.7,.3,1)'; ball.style.transform='translate(60px,-150px)'; }
-        else if (result.runs===4){ ball.style.transition='transform .55s ease-out'; ball.style.transform='translate(-116px,42px)'; }
-        else if (result.runs>0){ ball.style.transition='transform .5s ease-out'; ball.style.transform='translate(56px,30px)'; }
-        else { ball.style.transition='transform .3s ease-out'; ball.style.transform='translate(5px,132px)'; }
-        setTimeout(function(){ cb && cb(); }, 650);
-      }, 150);
-    }, 450);
+    var flds = field.querySelectorAll('.fld');
+    field.classList.remove('swing','out','bowl');
+    ball.style.transition='none'; ball.style.transform='translate(0,0)';
+    void field.offsetWidth;
+    field.classList.add('bowl');                 // 1) bowler runs up and bowls
+    setTimeout(function(){                         // 2) release: ball travels down the pitch
+      ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,126px)';
+    }, 820);
+    setTimeout(function(){                          // 3) ball reaches the batsman
+      field.classList.add('swing');                // 4) batsman swings and hits
+      setTimeout(function(){                         // 5) ball goes where the shot sent it
+        if (result.out){
+          if (Math.random() < 0.4){ field.classList.add('out'); mv(ball, 156, 230, .34); }  // bowled
+          else { var fi=Math.floor(Math.random()*FIELDERS.length), f=FIELDERS[fi]; mv(ball, f[0], f[1], .5); pulse(flds[fi], 1.9); }  // caught
+        }
+        else if (result.runs===6){ ball.style.transition='transform .72s cubic-bezier(.2,.7,.3,1)'; ball.style.transform='translate(70px,-175px)'; }  // over the top
+        else if (result.runs===4){ var bp=BOUNDARY[Math.floor(Math.random()*BOUNDARY.length)]; mv(ball, bp[0], bp[1], .62); }  // races to the boundary
+        else if (result.runs>0){ var gi=Math.floor(Math.random()*FIELDERS.length), g=FIELDERS[gi]; mv(ball, g[0], g[1], .5); pulse(flds[gi], 1.5); }  // fielded
+        else { mv(ball, 156, 218, .3); }  // defended, stays
+        setTimeout(function(){ cb && cb(); }, 700);
+      }, 170);
+    }, 820+500);
   }
 
   DG.register('cricket', {
