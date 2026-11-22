@@ -25,16 +25,14 @@
       '.ck-step{display:flex;align-items:center;gap:14px;} .ck-step .n{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;font-family:var(--font-d);font-weight:800;font-size:1.2rem;cursor:pointer;color:var(--ink);} .ck-step .v{font-family:var(--font-d);font-weight:800;font-size:2.2rem;min-width:52px;}'+
       '.ck-row{display:flex;gap:10px;}'+
       '.ck-field{width:100%;max-width:270px;display:block;margin:0 auto;}'+
-      '.ck-field .grd{fill:#2f7d4f;} .ck-field .grd2{fill:#37935d;opacity:.5;} .ck-field .rope{fill:none;stroke:#f3efe3;stroke-width:2;opacity:.5;} .ck-field .pit{fill:#c9a36a;} .ck-field .crease{stroke:#efe7d4;stroke-width:1.2;opacity:.7;}'+
-      '.ck-field .stump{stroke:#f3efe3;stroke-width:2.4;stroke-linecap:round;} .ck-field .fld{fill:#eae0cf;opacity:.85;}'+
-      '.ck-field .head{fill:#e8c6a0;} .ck-field .body{fill:#f5a524;} .ck-field .bowler .body{fill:#5aa6e8;}'+
-      '.ck-field .bat{stroke:#d9a441;stroke-width:4;stroke-linecap:round;transform-box:fill-box;transform-origin:0% 0%;transition:transform .18s ease;} .ck-field.swing .bat{transform:rotate(-72deg);}'+
+      '.ck-field .crease{stroke:#efe7d4;stroke-width:1.2;opacity:.6;} .ck-field .stump{stroke:#f3efe3;stroke-width:2.2;stroke-linecap:round;}'+
+      '.ck-field .head{fill:#e8c6a0;} .ck-field .pad{fill:#f2ece0;} .ck-field .shadow{fill:rgba(0,0,0,.15);}'+
+      '.ck-field .limb{stroke:#2e2015;stroke-width:2.2;stroke-linecap:round;fill:none;}'+
+      '.ck-field .bat{fill:url(#ckBat);transform-box:fill-box;transform-origin:0% 0%;transition:transform .18s ease;} .ck-field.swing .bat{transform:rotate(-66deg);}'+
       '.ck-field #ckstumps{transform-box:fill-box;transform-origin:bottom center;transition:transform .32s ease;} .ck-field.out #ckstumps{transform:rotate(18deg);}'+
       '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}'+
-      '.ck-field .limb{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;fill:none;}'+
-      '.ck-field .batsman .body{fill:#e0493f;}'+
-      '.ck-field .bowl-arm{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;transform-box:view-box;transform-origin:150px 74px;}'+
-      '.ck-field .bowler{transform-box:view-box;transform-origin:150px 79px;}'+
+      '.ck-field .bowl-arm{stroke:#2e2015;stroke-width:2.2;stroke-linecap:round;transform-box:view-box;transform-origin:150px 50px;}'+
+      '.ck-field .bowler{transform-box:view-box;transform-origin:150px 54px;}'+
       '.ck-field.bowl .bowler{animation:ckrun .46s ease-in;}'+
       '@keyframes ckrun{0%{transform:translateY(-40px)}25%{transform:translateY(-28px) scaleY(.95)}50%{transform:translateY(-16px) scaleY(1.03)}75%{transform:translateY(-6px) scaleY(.97)}100%{transform:translateY(0)}}'+
       '.ck-field.bowl .bowl-arm{animation:ckbowl .44s .46s ease-in;}'+
@@ -112,39 +110,45 @@
   // ---- cricket ground (SVG) ----
   function fieldHTML(){
     var g='';
-    for (var i=0;i<10;i++){ g+='<rect x="0" y="'+(i*30)+'" width="300" height="30" fill="'+(i%2?'#3a9a5a':'#34914f')+'"/>'; }
+    for (var i=0;i<12;i++){ g+='<rect x="0" y="'+(i*25)+'" width="300" height="25" fill="'+(i%2?'rgba(255,255,255,.03)':'rgba(0,0,0,.035)')+'"/>'; }
+    var fs='';
+    FIELDERS.forEach(function(f){ fs+='<g class="fld"><ellipse cx="'+f[0]+'" cy="'+(f[1]+4)+'" rx="4.5" ry="1.5" fill="rgba(0,0,0,.16)"/><ellipse cx="'+f[0]+'" cy="'+f[1]+'" rx="3" ry="4.2" fill="#cdd8ea"/><circle cx="'+f[0]+'" cy="'+(f[1]-5)+'" r="2.3" fill="#e8c6a0"/></g>'; });
     return '<svg class="ck-field" id="ckfield" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">'+
-      g+
-      '<polygon class="pit" points="136,52 164,52 194,256 106,256"/>'+
-      '<line class="crease" x1="126" y1="70" x2="174" y2="70"/><line class="crease" x1="108" y1="240" x2="192" y2="240"/>'+
-      '<g><line class="stump" x1="147" y1="44" x2="147" y2="54"/><line class="stump" x1="150" y1="44" x2="150" y2="54"/><line class="stump" x1="153" y1="44" x2="153" y2="54"/></g>'+
-      '<g id="ckstumps"><line class="stump" x1="145" y1="246" x2="145" y2="260"/><line class="stump" x1="150" y1="246" x2="150" y2="260"/><line class="stump" x1="155" y1="246" x2="155" y2="260"/></g>'+
-      '<circle class="fld" cx="56" cy="122" r="4"/><circle class="fld" cx="244" cy="122" r="4"/><circle class="fld" cx="36" cy="190" r="4.5"/><circle class="fld" cx="264" cy="190" r="4.5"/><circle class="fld" cx="92" cy="270" r="5"/><circle class="fld" cx="208" cy="270" r="5"/>'+
-      // umpire (far, side)
-      '<g><ellipse cx="200" cy="66" rx="4.5" ry="8" fill="#ededea"/><circle cx="200" cy="55" r="4" fill="#e8c6a0"/><rect x="195.5" y="49" width="9" height="3" rx="1.5" fill="#1f2a44"/></g>'+
-      // bowler (far/top)
-      '<g class="bowler"><path class="limb" d="M150 84 L146 94 M150 84 L154 94"/><ellipse class="body" cx="150" cy="79" rx="5.5" ry="8"/><circle class="head" cx="150" cy="68" r="4.6"/><path class="limb" d="M150 75 L142 81"/><line class="bowl-arm" x1="150" y1="74" x2="150" y2="60"/></g>'+
-      '<circle class="ball" id="ckball" cx="150" cy="90" r="5"/>'+
-      // batsman (near/bottom, bigger, red kit, helmet, pads, bat)
-      '<g class="batsman"><rect x="144" y="232" width="5" height="21" rx="2.5" fill="#efe8d6"/><rect x="151" y="232" width="5" height="21" rx="2.5" fill="#efe8d6"/><ellipse class="body" cx="150" cy="222" rx="8" ry="12"/><circle class="head" cx="150" cy="205" r="6.5"/><path d="M143.5 205 A6.5 6.5 0 0 1 156.5 205 Z" fill="#242424"/><path class="limb" d="M150 218 L165 225"/><path class="bat" d="M165 225 L178 251"/></g>'+
-      // wicketkeeper (behind near stumps, gloves)
-      '<g><path class="limb" d="M150 278 L145 286 M150 278 L155 286"/><ellipse cx="150" cy="272" rx="6.5" ry="8.5" fill="#2f9f6a"/><circle class="head" cx="150" cy="261" r="5"/><circle cx="143" cy="268" r="2.6" fill="#eee"/><circle cx="157" cy="268" r="2.6" fill="#eee"/></g>'+
+      '<defs>'+
+        '<radialGradient id="ckGrass" cx="0.5" cy="0.3" r="0.9"><stop offset="0" stop-color="#46ac69"/><stop offset="1" stop-color="#2d8150"/></radialGradient>'+
+        '<linearGradient id="ckPitch" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d0b27f"/><stop offset="1" stop-color="#c29c5f"/></linearGradient>'+
+        '<linearGradient id="ckRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f06d5c"/><stop offset="1" stop-color="#bd362b"/></linearGradient>'+
+        '<linearGradient id="ckBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6cb2f0"/><stop offset="1" stop-color="#3b76c2"/></linearGradient>'+
+        '<linearGradient id="ckBat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7bf72"/><stop offset="1" stop-color="#b5842c"/></linearGradient>'+
+      '</defs>'+
+      '<rect width="300" height="300" fill="url(#ckGrass)"/>'+ g +
+      '<polygon class="pit" points="134,42 166,42 198,258 102,258" fill="url(#ckPitch)"/>'+
+      '<line class="crease" x1="124" y1="66" x2="176" y2="66"/><line class="crease" x1="102" y1="238" x2="198" y2="238"/>'+
+      '<g><line class="stump" x1="147" y1="38" x2="147" y2="48"/><line class="stump" x1="150" y1="38" x2="150" y2="48"/><line class="stump" x1="153" y1="38" x2="153" y2="48"/></g>'+
+      '<g id="ckstumps"><line class="stump" x1="145" y1="246" x2="145" y2="262"/><line class="stump" x1="150" y1="246" x2="150" y2="262"/><line class="stump" x1="155" y1="246" x2="155" y2="262"/></g>'+
+      fs+
+      '<g><ellipse class="shadow" cx="202" cy="70" rx="6" ry="2"/><rect x="198" y="58" width="8" height="13" rx="3" fill="#ededea"/><circle cx="202" cy="53" r="4" fill="#e8c6a0"/><rect x="197" y="48" width="10" height="3" rx="1.5" fill="#20304f"/></g>'+
+      '<g class="bowler"><ellipse class="shadow" cx="150" cy="68" rx="8" ry="2.4"/><path class="limb" d="M150 56 L145 67 M150 56 L156 66"/><path class="body" d="M143 46 Q150 42 157 46 L155 58 Q150 61 145 58 Z" fill="url(#ckBlue)"/><circle class="head" cx="150" cy="41" r="4.6"/><path class="limb" d="M150 50 L143 56"/><line class="bowl-arm" x1="150" y1="50" x2="150" y2="36"/></g>'+
+      '<circle class="ball" id="ckball" cx="150" cy="54" r="5"/>'+
+      '<g class="batsman"><ellipse class="shadow" cx="150" cy="241" rx="17" ry="3.8"/><rect class="pad" x="143" y="216" width="7" height="24" rx="3.5"/><rect class="pad" x="151" y="216" width="7" height="24" rx="3.5"/><rect x="143" y="238" width="7.5" height="4.5" rx="1.5" fill="#222"/><rect x="150.5" y="238" width="7.5" height="4.5" rx="1.5" fill="#222"/><path class="body" d="M138 192 Q150 185 162 192 L159 216 Q150 221 141 216 Z" fill="url(#ckRed)"/><circle class="head" cx="150" cy="184" r="7"/><path d="M142 183 A8 8 0 0 1 158 183 L158 186 L142 186 Z" fill="#232a3a"/><rect x="150" y="183" width="9" height="5.5" rx="1.2" fill="#4a5262"/><path class="limb" d="M150 200 L167 206"/><circle cx="168" cy="207" r="3.2" fill="#f0f0f0"/><polygon class="bat" points="166,205 170,205 174,224 176,240 168,241 165,224"/></g>'+
+      '<g><ellipse class="shadow" cx="150" cy="288" rx="11" ry="3"/><path class="limb" d="M150 280 L146 288 M150 280 L154 288"/><path class="body" d="M144 266 Q150 263 156 266 L155 280 Q150 283 145 280 Z" fill="url(#ckBlue)"/><circle class="head" cx="150" cy="259" r="5"/><path d="M144.5 258 A5.5 5.5 0 0 1 155.5 258 L155.5 260 L144.5 260 Z" fill="#232a3a"/><circle cx="143" cy="270" r="3" fill="#f0f0f0"/><circle cx="157" cy="270" r="3" fill="#f0f0f0"/></g>'+
       '</svg>';
   }
   var FIELDERS = [[56,122],[244,122],[36,190],[264,190],[92,270],[208,270]];
   var BOUNDARY = [[10,150],[290,150],[150,296],[28,250],[272,250],[40,34],[260,34]];
-  function mv(ball, tx, ty, dur, ease){ ball.style.transition='transform '+dur+'s '+(ease||'ease-out'); ball.style.transform='translate('+(tx-150)+'px,'+(ty-90)+'px)'; }
+  function mv(ball, tx, ty, dur, ease){ ball.style.transition='transform '+dur+'s '+(ease||'ease-out'); ball.style.transform='translate('+(tx-150)+'px,'+(ty-54)+'px)'; }
   function pulse(fl, s){ if(!fl) return; fl.style.transformBox='fill-box'; fl.style.transformOrigin='center'; fl.style.transition='transform .18s ease-out'; setTimeout(function(){ fl.style.transform='scale('+s+')'; }, 430); setTimeout(function(){ fl.style.transform='scale(1)'; }, 1000); }
   function animateBall(result, cb){
     var field=document.getElementById('ckfield'), ball=document.getElementById('ckball');
     if (!field || !ball){ return cb && cb(); }
     var flds = field.querySelectorAll('.fld');
     field.classList.remove('swing','out','bowl');
-    ball.style.transition='none'; ball.style.transform='translate(0,0)';
+    ball.style.transition='none'; ball.style.transform='translate(0,-40px)';   // ball in hand, start of run-up
     void field.offsetWidth;
-    field.classList.add('bowl');                 // 1) bowler runs up and bowls
-    setTimeout(function(){                         // 2) release: ball travels down the pitch
-      ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,132px)';
+    field.classList.add('bowl');                 // 1) bowler runs up (carrying the ball) to the crease
+    ball.style.transition='transform .46s ease-in'; ball.style.transform='translate(0,0)';   // ball moves WITH the bowler
+    setTimeout(function(){                         // 2) release from the crease: ball speeds down the pitch
+      ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,162px)';
     }, 820);
     setTimeout(function(){                          // 3) ball reaches the batsman
       field.classList.add('swing');                // 4) batsman swings and hits
