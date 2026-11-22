@@ -13,12 +13,13 @@
       b.style.setProperty('--c1', g.c1); b.style.setProperty('--c2', g.c2);
       var sub = (DG.lang === 'en') ? '' : g.n.en;
       b.innerHTML =
-        (g.hot ? '<span class="badge">' + t.trending + '</span>' : '') +
-        '<span class="emoji">' + g.ic + '</span>' +
-        (g.play ? '' : '<span class="soon-tag">' + t.soon + ' 🔜</span>') +
-        '<div class="t-hi">' + DG.gname(g) + '</div>' +
-        '<div class="t-en">' + sub + '</div>' +
-        '<div class="players">' + t.players(g.p) + '</div>';
+        '<div class="t-top">' +
+          '<span class="t-icon"><span class="t-emoji">' + g.ic + '</span></span>' +
+          (g.hot ? '<span class="t-flame">🔥</span>' : '') +
+        '</div>' +
+        '<div class="t-name">' + DG.gname(g) + '</div>' +
+        '<div class="t-sub">' + sub + '</div>' +
+        '<div class="t-foot">' + (g.play ? t.players(g.p) : '<span class="t-soon">' + t.soon + '</span>') + '</div>';
       b.onclick = function () { openSheet(g); };
       grid.appendChild(b);
     });
@@ -36,7 +37,7 @@
 
   function applyLang() {
     var t = DG.t();
-    set('langLbl', t.langName); set('lvl', t.level); set('liveTxt', t.online('2,418'));
+    set('brandName', t.brand); set('langLbl', t.langName); set('lvl', t.level); set('liveTxt', t.online('2,418'));
     set('heroTitle', t.heroTitle); set('heroSub', t.heroSub); set('btnCreate', t.create); set('btnJoin', t.join);
     set('secTitle', t.allGames); set('secAll', t.all); set('note', t.note);
     set('mOnlineT', t.online_t); set('mOnlineS', t.online_s); set('mPassT', t.pass_t); set('mPassS', t.pass_s); set('mAiT', t.ai_t); set('mAiS', t.ai_s);
