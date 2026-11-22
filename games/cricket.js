@@ -30,7 +30,8 @@
       '.ck-field .head{fill:#e8c6a0;} .ck-field .body{fill:#f5a524;} .ck-field .bowler .body{fill:#5aa6e8;}'+
       '.ck-field .bat{stroke:#d9a441;stroke-width:4;stroke-linecap:round;transform-box:fill-box;transform-origin:0% 0%;transition:transform .18s ease;} .ck-field.swing .bat{transform:rotate(-72deg);}'+
       '.ck-field #ckstumps{transform-box:fill-box;transform-origin:bottom center;transition:transform .32s ease;} .ck-field.out #ckstumps{transform:rotate(18deg);}'+
-      '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}';
+      '.ck-field .ball{fill:#e23b3b;stroke:#fff;stroke-width:.8;}'+
+      '.ck-field .limb{stroke:#3a2410;stroke-width:2.3;stroke-linecap:round;fill:none;}';
     document.head.appendChild(st);
   }
 
@@ -115,8 +116,8 @@
       '<circle class="fld" cx="66" cy="112" r="4"/><circle class="fld" cx="234" cy="112" r="4"/><circle class="fld" cx="52" cy="186" r="4"/><circle class="fld" cx="248" cy="186" r="4"/><circle class="fld" cx="110" cy="254" r="4"/><circle class="fld" cx="198" cy="58" r="4"/>'+
       '<g><line class="stump" x1="146" y1="44" x2="146" y2="56"/><line class="stump" x1="150" y1="44" x2="150" y2="56"/><line class="stump" x1="154" y1="44" x2="154" y2="56"/></g>'+
       '<g id="ckstumps"><line class="stump" x1="146" y1="240" x2="146" y2="252"/><line class="stump" x1="150" y1="240" x2="150" y2="252"/><line class="stump" x1="154" y1="240" x2="154" y2="252"/></g>'+
-      '<g class="bowler"><ellipse class="body" cx="150" cy="84" rx="7" ry="11"/><circle class="head" cx="150" cy="70" r="6"/></g>'+
-      '<g class="batsman"><line class="bat" x1="150" y1="224" x2="162" y2="238"/><ellipse class="body" cx="150" cy="220" rx="7" ry="11"/><circle class="head" cx="150" cy="206" r="6"/></g>'+
+      '<g class="bowler"><path class="limb" d="M150 90 L145 101 M150 90 L155 101"/><ellipse class="body" cx="150" cy="83" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="70" r="5.5"/><path class="limb" d="M150 79 L150 63 M150 79 L139 87"/></g>'+
+      '<g class="batsman"><path class="limb" d="M150 219 L143 232 M150 219 L157 232"/><ellipse class="body" cx="150" cy="211" rx="6.5" ry="9.5"/><circle class="head" cx="150" cy="198" r="5.5"/><path class="limb" d="M150 207 L162 214 M150 207 L139 213"/><path class="bat" d="M162 214 L173 231"/></g>'+
       '<circle class="ball" id="ckball" cx="150" cy="90" r="5"/>'+
       '</svg>';
   }
