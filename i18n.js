@@ -7,7 +7,7 @@ window.DG = (function () {
     { id:'ludo',  ic:'🎲', c1:'#ff3d6e', c2:'#5b5cff', p:'2-4', play:1, hot:1, n:{hi:'लूडो',en:'Ludo',hinglish:'Ludo',bn:'লুডো'} },
     { id:'bagh',  ic:'🐯', c1:'#ff9a1e', c2:'#e5531b', p:'2', play:1, hot:1, n:{hi:'बाघ-बकरी',en:'Goats & Tigers',hinglish:'Bagh-Bakri',bn:'বাঘ-ছাগল'} },
     { id:'nau',   ic:'⚫', c1:'#9a6bff', c2:'#5b3fd6', p:'2', play:1, n:{hi:'नौ-गोटी',en:'Nine Men’s Morris',hinglish:'Nau-Goti',bn:'নয়-গুটি'} },
-    { id:'carrom',ic:'🎯', c1:'#ffcf4d', c2:'#c0841b', p:'2-4',      n:{hi:'कैरम',en:'Carrom',hinglish:'Carrom',bn:'ক্যারম'} },
+    { id:'carrom',ic:'🎯', c1:'#ffcf4d', c2:'#c0841b', p:'2', play:1, hot:1, n:{hi:'कैरम',en:'Carrom',hinglish:'Carrom',bn:'ক্যারম'} },
     { id:'patang',ic:'🪁', c1:'#45b1ff', c2:'#2f6fd6', p:'1-2',      n:{hi:'पतंग काटो',en:'Kite Fight',hinglish:'Patang Kaato',bn:'ঘুড়ি কাটাকাটি'} },
     { id:'chor',  ic:'👮', c1:'#ff5ea0', c2:'#df1d6e', p:'4',        n:{hi:'चोर-सिपाही',en:'Cops & Robbers',hinglish:'Chor-Sipahi',bn:'চোর-পুলিশ'} },
     { id:'kanche',ic:'🔵', c1:'#19d7c9', c2:'#1a8fd6', p:'1-2',      n:{hi:'कंचे',en:'Marbles',hinglish:'Kanche',bn:'মার্বেল'} },
