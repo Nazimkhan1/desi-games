@@ -4,7 +4,7 @@ _Updated: 2026-11-23_
 
 **Live:** https://desi-games.nextgrade.in (GitHub Pages, repo public-for-now → baad mein private; HTTPS on)
 **Repo:** github.com/Nazimkhan1/desi-games
-**Local run:** `cd ~/www/desi-games && python3 -m http.server 7878` → http://localhost:7878
+**Local run:** `cd ~/www/nazim/desi-games && python3 -m http.server 7878` → http://localhost:7878
 (Chrome port 6666 block karta hai — 7878/8080 use karo.)
 
 ---
