@@ -1,8 +1,8 @@
 /* Offline support: network-first (so new games and fixes reach everyone right away),
    falling back to the cache when there is no internet (pass-play & vs-computer still work). */
-var CACHE = 'desi-games-v4';
+var CACHE = 'desi-games-v5';
 var ASSETS = ['./','./index.html','./app.css','./i18n.js','./app.js','./net.js','./firebase-config.js','./firebase-net.js',
-  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js','./games/carrom.js','./games/patang.js','./games/chor-sipahi.js',
+  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js','./games/carrom.js','./games/patang.js','./games/chor-sipahi.js','./games/kanche.js',
   './manifest.webmanifest','./icons/icon.svg','./icons/favicon.svg','./icons/icon-192.png'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function(){ return self.skipWaiting(); })); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return k !== CACHE ? caches.delete(k) : null; })); }).then(function(){ return self.clients.claim(); })); });
