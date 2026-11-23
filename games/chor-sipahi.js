@@ -159,7 +159,7 @@
       var timers = [], players = [], totals, roundNo, nRounds = store('dg-chor-rounds') || 5, roles, faces, last;
       function T() { return CL[DG.lang] || CL.en; }
       function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-      function clear() { timers.forEach(clearTimeout); timers = []; root.innerHTML = ''; }
+      function clear() { timers.forEach(clearTimeout); timers = []; root.innerHTML = ''; try { window.scrollTo(0, 0); (wrap.closest('.game-root,#gameRoot') || wrap).scrollTop = 0; } catch (e) {} }
       function h(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; root.appendChild(e); return e; }
       function btn(parent, txt, cls, fn) { var b = document.createElement('button'); b.className = 'cs-btn' + (cls ? ' ' + cls : ''); b.textContent = txt; b.onclick = fn; parent.appendChild(b); return b; }
       function nm(i) { return players[i].name; }
@@ -296,12 +296,13 @@
         later(function () {
           var pts = score(roles, guess); last = pts;
           for (var k = 0; k < 4; k++) totals[k] += pts[k];
-          h('div', 'cs-res', esc(ok ? x.caught(nm(chor)) : x.escaped(nm(chor))));
+          var res = h('div', 'cs-res', esc(ok ? x.caught(nm(chor)) : x.escaped(nm(chor))));
           if (!ok) h('p', 'cs-sub', esc(x.swap));
-          table(pts);
           var acts = h('div', 'cs-acts');
           if (roundNo < nRounds) btn(acts, x.next, '', nextRound); else btn(acts, x.final, '', finish);
+          table(pts);
           if (mode === 'ai' && roundNo === 1) h('p', 'cs-sub', esc(x.tip));
+          try { res.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
         }, 1300);
       }
       function table(pts) {

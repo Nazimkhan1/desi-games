@@ -1,6 +1,6 @@
 /* Offline support: network-first (so new games and fixes reach everyone right away),
    falling back to the cache when there is no internet (pass-play & vs-computer still work). */
-var CACHE = 'desi-games-v3';
+var CACHE = 'desi-games-v4';
 var ASSETS = ['./','./index.html','./app.css','./i18n.js','./app.js','./net.js','./firebase-config.js','./firebase-net.js',
   './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js','./games/carrom.js','./games/patang.js','./games/chor-sipahi.js',
   './manifest.webmanifest','./icons/icon.svg','./icons/favicon.svg','./icons/icon-192.png'];
@@ -9,7 +9,7 @@ self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  e.respondWith(fetch(req).then(function (res) {
+  e.respondWith(fetch(req, { cache: 'no-cache' }).then(function (res) {
     if (res && res.ok) { var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
     return res;
   }).catch(function () {
