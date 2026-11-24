@@ -287,10 +287,10 @@
         phase = 'rolling'; renderBar();
         var d = (DG.ludoDice && DG.ludoDice.length) ? DG.ludoDice.shift() : 1 + Math.floor(Math.random() * 6); // DG.ludoDice: test hook
         lastD = d;
-        dice.classList.remove('roll'); void dice.offsetWidth; dice.classList.add('roll');
+        dice.classList.remove('roll'); void dice.offsetWidth; dice.classList.add('roll'); DG.sfx('dice');
         later(function () {
           dice.innerHTML = diceFace(d);
-          if (d === 6) { sixes++; if (sixes === 3) { say(T.three6); return later(nextTurn, 1100); } }
+          if (d === 6) { sixes++; if (sixes === 3) { say(T.three6); DG.sfx('buzz'); return later(nextTurn, 1100); } DG.sfx('bonus'); }
           moves = legal(tokens, cur, d);
           if (!moves.length) { say(tokens[cur].every(function (p) { return p < 0 || p === FIN; }) && d !== 6 ? T.need6 : T.noMove); return later(nextTurn, 950); }
           var same = moves.every(function (m) { return m.from === moves[0].from; });
@@ -311,7 +311,7 @@
         say('');
         (function walk(i) {
           if (i >= steps.length) return settle(c, m);
-          tokens[c][m.k] = steps[i]; renderTokens();
+          tokens[c][m.k] = steps[i]; renderTokens(); DG.sfx(i === 0 && m.from < 0 ? 'place' : 'step');
           later(function () { walk(i + 1); }, 130);
         })(0);
       }
@@ -320,6 +320,7 @@
         var cut = cutsOf(tokens, seats, c, m.to);
         cut.forEach(function (q) { tokens[q[0]][q[1]] = -1; });
         renderTokens();
+        if (cut.length) { DG.sfx('capture'); DG.buzz(60); } else if (m.to === FIN) DG.sfx('home');
         if (tokens[c].every(function (p) { return p === FIN; })) return later(function () { finish(c); }, 500);
         var extra = lastD === 6 || cut.length > 0 || m.to === FIN;
         if (cut.length) say(T.cut); else if (m.to === FIN) say(T.home); else if (lastD === 6) say(T.six);
@@ -329,7 +330,7 @@
       }
 
       function finish(c) {
-        phase = 'over'; T = lt(); root.innerHTML = '';
+        phase = 'over'; T = lt(); root.innerHTML = ''; DG.result(mode === 'ai' && !human[c] ? 'lose' : 'win');
         var txt = mode === 'ai' ? (human[c] ? DG.t().youWin : DG.t().wins(nameOf(c))) : DG.t().wins(nameOf(c));
         var r = document.createElement('div'); r.className = 'ld-result';
         r.innerHTML = '<div style="font-size:3rem">' + (mode === 'ai' && !human[c] ? '🤖' : '🏆') + '</div><div class="rt"></div>';

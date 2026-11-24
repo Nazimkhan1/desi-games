@@ -220,7 +220,7 @@
             var others = shuffle(pile.filter(function (r) { return r !== role; }));
             roles = [role].concat(others); faces = roles.map(face);
             grid.querySelectorAll('.cs-chit').forEach(function (o) { o.classList.remove('tap'); });
-            c.classList.add('pick', 'open');
+            c.classList.add('pick', 'open'); DG.sfx('paper');
             later(showMine, 900);
           };
         });
@@ -244,7 +244,7 @@
         clear(); var x = T(); chip();
         h('p', 'cs-sub', esc(x.onlyYou(nm(i))));
         var big = h('div', 'cs-big'), c = chit(roles[i], false); big.appendChild(c);
-        later(function () { c.classList.add('open'); }, 60);
+        later(function () { c.classList.add('open'); DG.sfx('paper'); }, 60);
         h('div', 'cs-say', esc(x.note[roles[i]]));
         btn(h('div', 'cs-acts'), i < 3 ? x.hideNext(nm(i + 1)) : x.court, '', function () { if (i < 3) passTo(i + 1); else court(); });
       }
@@ -265,8 +265,8 @@
           table.appendChild(s); cards[k] = c; seats[k] = s;
         });
         var ask = h('p', 'cs-sub', '');
-        later(function () { cards[raja].classList.add('open'); }, 250);
-        later(function () { say.textContent = x.mantriSays(nm(mantri)); cards[mantri].classList.add('open'); }, 1300);
+        later(function () { cards[raja].classList.add('open'); DG.sfx('paper'); }, 250);
+        later(function () { say.textContent = x.mantriSays(nm(mantri)); cards[mantri].classList.add('open'); DG.sfx('paper'); }, 1300);
         later(function () {
           say.textContent = x.order(nm(mantri));
           var decided = false;
@@ -292,10 +292,11 @@
       }
       function reveal(guess, two, cards) {
         var x = T(), chor = roles.indexOf(CHOR), ok = roles[guess] === CHOR;
-        later(function () { two.forEach(function (k) { cards[k].classList.add('open'); }); }, 500);
+        later(function () { two.forEach(function (k) { cards[k].classList.add('open'); }); DG.sfx('paper'); }, 500);
         later(function () {
           var pts = score(roles, guess); last = pts;
           for (var k = 0; k < 4; k++) totals[k] += pts[k];
+          if (ok) DG.sfx('mill'); else { DG.sfx('buzz'); DG.buzz(60); }
           var res = h('div', 'cs-res', esc(ok ? x.caught(nm(chor)) : x.escaped(nm(chor))));
           if (!ok) h('p', 'cs-sub', esc(x.swap));
           var acts = h('div', 'cs-acts');
@@ -317,7 +318,7 @@
       function finish() {
         clear(); var x = T();
         var best = Math.max.apply(null, totals), win = [0, 1, 2, 3].filter(function (k) { return totals[k] === best; });
-        h('div', 'cs-cover', '🏆');
+        h('div', 'cs-cover', '🏆'); DG.result(mode === 'ai' && win.indexOf(0) < 0 ? 'lose' : 'win');
         h('div', 'cs-res', esc(win.length > 1 ? x.tie + ' ' + win.map(nm).join(', ') : (mode === 'ai' && win[0] === 0 ? DG.t().youWin : x.winner(nm(win[0])))));
         table(null);
         var acts = h('div', 'cs-acts');

@@ -88,7 +88,9 @@
         else if (mode==='ai') txt = (w.mark==='X') ? t.youWin : t.youLose;
         else if (mode==='online') txt = (w.mark===myMark) ? t.youWin : t.youLose;
         else txt = t.wins(label(w.mark));
+        DG.result(!w ? 'draw' : ((mode==='pass') ? 'win' : ((w.mark===(mode==='ai'?'X':myMark)) ? 'win' : 'lose')));
         if (w){
+          setTimeout(function(){ DG.sfx('swish'); }, 120);
           w.line.forEach(function(idx){ cells[idx].classList.add('win'); });
           var cx=function(i){return (i%3)*33.333+16.666;}, cy=function(i){return Math.floor(i/3)*33.333+16.666;};
           var a=w.line[0], c=w.line[2], x1=cx(a),y1=cy(a),x2=cx(c),y2=cy(c);
@@ -111,7 +113,7 @@
       }
 
       function place(i, fromRemote){
-        board[i]=turn; render();
+        board[i]=turn; render(); DG.sfx(turn==='X' ? 'place' : 'place2');
         if (mode==='online' && !fromRemote && net) net.send('move', {i:i});
         var w=winner(board); if (w || full(board)) return finish(w);
         turn = turn==='X' ? 'O' : 'X'; paintTurn();
@@ -127,7 +129,7 @@
         var t=DG.t(); chip.innerHTML='<span class="mk" style="background:var(--cyan)"></span>'+t.aiThinking;
         cells.forEach(function(c){ c.classList.add('dis'); });
         setTimeout(function(){
-          var i=bestMove(board.slice()); board[i]='O'; render();
+          var i=bestMove(board.slice()); board[i]='O'; render(); DG.sfx('place2');
           var w=winner(board); if (w || full(board)) return finish(w);
           turn='X'; paintTurn();
         }, 480);

@@ -285,7 +285,7 @@
       });
       cv.addEventListener('pointermove', function (e) {
         if (!drag) return; var p = toGround(e), dx = drag[0] - p[0], dy = drag[1] - p[1], L = Math.hypot(dx, dy);
-        aim = L < 7 ? null : { ang: Math.atan2(dy, dx), pow: Math.min(1, L / 190) };
+        var had = !!aim; aim = L < 7 ? null : { ang: Math.atan2(dy, dx), pow: Math.min(1, L / 190) }; if (aim && !had) DG.sfx('pull');
         msg = ''; render();
       });
       function release() {
@@ -315,7 +315,8 @@
         var before = bodies.filter(function (o) { return o.k === 'm' && inRing(o); });
         s.vx = Math.cos(ang) * pow * VMAX; s.vy = Math.sin(ang) * pow * VMAX; aim = null;
         var steal = false;
-        function hit(a, c) { if (a.k === 's' && c.k === 's' && (a === s || c === s)) steal = true; }
+        function hit(a, c) { if (a.k === 's' && c.k === 's' && (a === s || c === s)) steal = true; DG.sfx('clack', Math.min(1, (Math.hypot(a.vx, a.vy) + Math.hypot(c.vx, c.vy)) / VMAX)); }
+        DG.sfx('strike', pow);
         render();
         var steps = 0;
         (function frame() {
@@ -331,6 +332,7 @@
       function settle(before, steal) {
         var out = before.filter(function (o) { return !inRing(o); }), notes = [], again = false;
         var mine = own(), stuck = !!(mine && inRing(mine));
+        if (out.length || (steal && won[1 - turn] > 0)) DG.sfx('ting'); else if (stuck) DG.sfx('buzz');
         if (out.length) { won[turn] += out.length; bodies = bodies.filter(function (o) { return out.indexOf(o) < 0; }); notes.push(stuck ? X.gotOut(out.length) : X.out(out.length)); again = true; }
         if (steal && won[1 - turn] > 0) { won[1 - turn]--; won[turn]++; notes.push(X.steal); again = true; }
         // a goli that stops inside the ring goes back to the lakeer, and the turn is over
@@ -347,7 +349,7 @@
       function finish() {
         phase = 'over';
         var w = won[0] === won[1] ? -1 : (won[0] > won[1] ? 0 : 1);
-        var t = DG.t();
+        var t = DG.t(); DG.result(w < 0 ? 'draw' : (mode === 'ai' && w !== 0 ? 'lose' : 'win'));
         var txt = w < 0 ? t.drawRes : (mode === 'ai' ? (w === 0 ? t.youWin : t.youLose) : t.wins(pname(w)));
         root.innerHTML = '';
         var box = document.createElement('div'); box.className = 'kc-result';

@@ -178,7 +178,7 @@
         return [mid[0] - 30 + Math.sin(t * 1.1) * 25, mid[1] - 20 + Math.cos(t * .8) * 20];
       }
 
-      var lastDt = 0.016;
+      var lastDt = 0.016, swishAt = [];
       function update(dt) {
         lastDt = dt; t += dt; if (bannerT > 0) bannerT -= dt;
         if (phase === 'ready') { kites.forEach(function (k, i) { moveKite(k, ANCHOR[i][0] + (i ? -40 : 40), ROOF - 180, dt); }); return; }
@@ -192,16 +192,18 @@
         for (var i = 0; i < 2; i++) {
           var tg = human(i) ? (targets[i] || hoverTarget(i)) : aiTarget();
           moveKite(kites[i], tg[0], tg[1], dt, human(i) ? VMAX : VMAX * (.6 + ai.aggr * .25)); // computer a bit slower than a fast finger
+          if (human(i) && !pench.on && Math.hypot(kites[i].vx, kites[i].vy) > VMAX * .6 && t - (swishAt[i] || -9) > .7) { swishAt[i] = t; DG.sfx('swish'); }
         }
         var a = stringPts(0, kites[0], t), b = stringPts(1, kites[1], t), x = crossing(a, b);
         if (x) {
-          if (!pench.on) { pench.on = true; say(X.pench, 1.2); try { navigator.vibrate && navigator.vibrate(40); } catch (e) {} }
+          if (!pench.on) { pench.on = true; pench.snd = 0; say(X.pench, 1.2); DG.buzz(40); }
           pench.at = x; pench.grace = 0.9; // tangled strings stay tangled for a moment even if they swing apart
         } else if (pench.on) {
           pench.grace -= dt;
           if (pench.grace <= 0) { pench.on = false; pench.m *= 0.6; } // the lead carries over to the next pench
         }
         if (pench.on) {
+          pench.snd -= dt; if (pench.snd <= 0) { DG.sfx('pench'); pench.snd = 0.55; } // dor ki kirr-kirr while tangled
           var s0 = Math.hypot(kites[0].vx, kites[0].vy), s1 = Math.hypot(kites[1].vx, kites[1].vy);
           pench.m += Math.max(-1, Math.min(1, (s0 - s1) / 60)) * dt * 1.2 + (Math.random() - .5) * dt * .3; // faster kite wins in ~1–2 s
           if (Math.abs(pench.m) >= 1) cut(pench.m > 0 ? 1 : 0);
@@ -212,7 +214,8 @@
         phase = 'cut'; kites[loser].cut = true; pench.on = false;
         var winner = 1 - loser; score[winner]++; renderScore();
         say(mode === 'ai' && loser === 0 ? X.lost : X.cut, 2);
-        try { navigator.vibrate && navigator.vibrate([60, 40, 120]); } catch (e) {}
+        DG.sfx('capture'); DG.buzz([60, 40, 120]);
+        later(function () { DG.sfx(mode === 'ai' && loser === 0 ? 'snake' : 'home'); }, 250);
         later(function () { if (score[winner] >= WIN) finish(winner); else newRound(); }, 2300);
       }
 
@@ -247,7 +250,7 @@
       }
 
       function finish(w) {
-        phase = 'over'; cancelAnimationFrame(raf);
+        phase = 'over'; cancelAnimationFrame(raf); DG.result(mode === 'ai' && w !== 0 ? 'lose' : 'win');
         var txt = mode === 'ai' ? (w === 0 ? DG.t().youWin : DG.t().youLose) : DG.t().wins(name(w));
         root.innerHTML = '';
         var box = document.createElement('div'); box.className = 'pt-result';

@@ -30,6 +30,7 @@
     </div>
     <div class="spacer"></div>
     <div class="stat">🪙 120</div>
+    <button class="snd-btn" data-sound-btn type="button">🔊</button>
     <button class="lang-btn" id="langBtn">🌐 <span id="langLbl">हिंदी</span></button>
   </div>
   <div class="lang-menu" id="langMenu"></div>
@@ -82,7 +83,7 @@
 
 <!-- active game mounts here -->
 <div class="game-root" id="gameRoot">
-  <div class="game-bar"><button class="ibtn" id="gameBack">‹</button><h2 id="gameTitle"></h2><span class="mode-pill" id="gameMode"></span></div>
+  <div class="game-bar"><button class="ibtn" id="gameBack">‹</button><h2 id="gameTitle"></h2><span class="mode-pill" id="gameMode"></span><button class="snd-btn" data-sound-btn type="button">🔊</button></div>
   <div class="game-wrap" id="gameWrap"></div>
 </div>
 
@@ -90,8 +91,10 @@
 
 <script src="firebase-config.js"></script>
 <script src="i18n.js"></script>
+<script src="sound.js"></script>
 <script src="net.js"></script>
 <script src="firebase-net.js"></script>
+<script src="games/_kit.js"></script>
 <script src="games/kattam-katti.js"></script>
 <script src="games/saanp-seedhi.js"></script>
 <script src="games/cricket.js"></script>
@@ -103,6 +106,10 @@
 <script src="games/chor-sipahi.js"></script>
 <script src="games/kanche.js"></script>
 <script src="games/gilli-danda.js"></script>
+<script src="games/antakshari.js"></script>
+<script src="games/lattu.js"></script>
+<script src="games/pitthu.js"></script>
+<script src="games/ashta-chamma.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

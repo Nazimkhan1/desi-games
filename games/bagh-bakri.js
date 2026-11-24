@@ -231,7 +231,7 @@
         if (over || !isHuman(s.turn)) return;
         var all = moves(s);
         if (s.turn === G && s.placed < GOATS) { var pm = all.filter(function (m) { return m[1] === i; })[0]; if (pm) play(pm); return; }
-        if (s.b[i] === s.turn) { sel = sel === i ? null : (legalFor(i).length ? i : null); render(); return; }
+        if (s.b[i] === s.turn) { sel = sel === i ? null : (legalFor(i).length ? i : null); DG.sfx('tap'); render(); return; }
         if (sel != null) {
           var mv = legalFor(sel).filter(function (m) { return m[1] === i; })[0];
           if (mv) play(mv);
@@ -240,6 +240,7 @@
 
       function play(m) {
         msg = m[2] >= 0 ? X.ate : '';
+        if (m[2] >= 0) { DG.sfx('growl'); DG.buzz(70); } else if (m[0] < 0) DG.sfx('place'); else DG.sfx(s.turn === T ? 'place2' : 'slide');
         s = apply(s, m); sel = null; last = m[1];
         var r = result(s);
         if (r) { render(); return later(function () { finish(r); }, 700); }
@@ -253,6 +254,7 @@
 
       function finish(r) {
         over = true; root.innerHTML = '';
+        DG.result(r === 'draw' ? 'draw' : (mode === 'ai' && r !== humanSide ? 'lose' : 'win'));
         var txt, em;
         if (r === 'draw') { txt = X.draw; em = '🤝'; }
         else if (mode === 'ai') { txt = r === humanSide ? DG.t().youWin : DG.t().youLose; em = r === T ? '🐯' : '🐐'; }

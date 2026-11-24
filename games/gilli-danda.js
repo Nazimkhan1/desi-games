@@ -188,7 +188,7 @@
       tap.onclick = onTap; cv.addEventListener('pointerdown', function (e) { e.preventDefault(); onTap(); });
 
       function flip() {
-        phase = 'up'; msg = ''; t = 0; popVy = POP + (Math.random() - .5) * 0.5; swing = 0; render();
+        phase = 'up'; msg = ''; t = 0; DG.sfx('place'); popVy = POP + (Math.random() - .5) * 0.5; swing = 0; render();
         var last = performance.now();
         (function frame(now) {
           if (dead || phase !== 'up') return;
@@ -202,7 +202,8 @@
         if (phase !== 'up') return;
         var rising = popVy - G * t > 0, s = strike(gy, rising);
         swing = 1;
-        if (!s) return result(null);
+        if (!s) { DG.sfx('swish'); return result(null); }
+        DG.sfx('thwack'); DG.buzz(30);
         fly(s);
       }
       function fly(s) {
@@ -219,7 +220,7 @@
           if (ft > REACT && fl.lofted) { var dir = Math.sign(fl.land - ff.x), stepx = Math.min(Math.abs(fl.land - ff.x), RUN * dt); ff.x += dir * stepx; if (stepx > 0) ff.run += dt; }
           if (!landed) {
             gx = x0 + vx * ft; gy = h0 + vy * ft - G / 2 * ft * ft;
-            if (ft >= fl.T) { landed = true; gx = x0 + fl.land; gy = 0; if (caught) { held = true; ff.x = gx; cam = Math.max(0, gx - 12); draw(); return later(function () { result('caught'); }, 500); } }
+            if (ft >= fl.T) { landed = true; if (!caught) DG.sfx('thud', 0.5); gx = x0 + fl.land; gy = 0; if (caught) { held = true; ff.x = gx; cam = Math.max(0, gx - 12); draw(); return later(function () { result('caught'); }, 500); } }
           } else {
             gx += (fl.stop + x0 - gx) * Math.min(1, dt * 3.2);
             if (Math.abs(fl.stop + x0 - gx) < 0.05) { gx = fl.stop + x0; cam = Math.max(0, gx - 12); draw(); return result('ok'); }
@@ -232,10 +233,10 @@
         phase = 'shown';
         if (kind === 'ok') {
           var d = toDanda(gx); scores[bat] += d; best = Math.max(best, d);
-          msg = fl.lofted ? X.far(d) : X.flat(d);
+          msg = fl.lofted ? X.far(d) : X.flat(d); DG.sfx('ting');
         } else {
           if (!kind) { shots++; swing = 0; }
-          lives--; msg = kind === 'caught' ? X.caught : X.miss;
+          lives--; msg = kind === 'caught' ? X.caught : X.miss; if (kind === 'caught') DG.sfx('capture'); else DG.sfx('thud', 0.3); later(function () { DG.sfx('buzz'); }, 200);
         }
         render();
         later(function () {
@@ -266,6 +267,7 @@
       function finish() {
         phase = 'over';
         var t = DG.t(), w = scores[0] === scores[1] ? -1 : (scores[0] > scores[1] ? 0 : 1);
+        DG.result(w < 0 ? 'draw' : (mode === 'ai' && w !== 0 ? 'lose' : 'win'));
         var txt = w < 0 ? t.drawRes : (mode === 'ai' ? (w === 0 ? t.youWin : t.youLose) : t.wins(pname(w)));
         root.innerHTML = '';
         var box = document.createElement('div'); box.className = 'gd-result';

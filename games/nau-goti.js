@@ -127,22 +127,22 @@
           return;
         }
         // moving / flying
-        if (board[i]===turn){ selected = (selected===i?null:i); render(); return; }
+        if (board[i]===turn){ selected = (selected===i?null:i); DG.sfx('tap'); render(); return; }
         if (selected!=null && !board[i] && validDests().indexOf(i)>=0){ doMove(selected, i); }
       }
 
-      function doPlace(i){ board[i]=turn; placed[turn]++; afterAction(i); }
-      function doMove(from, to){ board[from]=0; board[to]=turn; selected=null; afterAction(to); }
+      function doPlace(i){ board[i]=turn; placed[turn]++; DG.sfx(turn===1?'place':'place2'); afterAction(i); }
+      function doMove(from, to){ board[from]=0; board[to]=turn; selected=null; DG.sfx('slide'); afterAction(to); }
       function afterAction(i){
         if (formsMill(board, i, turn)){
           if (removable(board, other(turn)).length===0){ nextTurn(); return; }
-          removal = turn; render();
+          removal = turn; render(); setTimeout(function(){ DG.sfx('mill'); }, 120);
           if (!isHuman(turn)) setTimeout(aiRemove, 650);
           return;
         }
         nextTurn();
       }
-      function doRemove(i){ board[i]=0; removal=0; nextTurn(); }
+      function doRemove(i){ board[i]=0; removal=0; DG.sfx('capture'); DG.buzz(50); nextTurn(); }
 
       function nextTurn(){
         turn = other(turn); selected=null;
@@ -200,7 +200,7 @@
       }
 
       function finish(winner){
-        over=true;
+        over=true; DG.result(mode==='ai' && winner!==1 ? 'lose' : 'win');
         var x=t(), txt;
         if (mode==='ai') txt = winner===1 ? x.youWin : x.youLose;
         else txt = x.wins(pname(winner));

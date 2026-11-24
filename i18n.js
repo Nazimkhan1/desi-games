@@ -11,7 +11,11 @@ window.DG = (function () {
     { id:'patang',ic:'🪁', c1:'#45b1ff', c2:'#2f6fd6', p:'1-2', play:1, hot:1, n:{hi:'पतंग काटो',en:'Kite Fight',hinglish:'Patang Kaato',bn:'ঘুড়ি কাটাকাটি'} },
     { id:'chor',  ic:'👮', c1:'#ff5ea0', c2:'#df1d6e', p:'4', play:1, hot:1, n:{hi:'चोर-सिपाही',en:'Raja Mantri Chor Sipahi',hinglish:'Chor-Sipahi',bn:'চোর-সিপাই'} },
     { id:'kanche',ic:'🔵', c1:'#19d7c9', c2:'#1a8fd6', p:'2', play:1, hot:1, n:{hi:'कंचे',en:'Marbles',hinglish:'Kanche',bn:'মার্বেল'} },
-    { id:'gilli', ic:'🏏', c1:'#9be34a', c2:'#4e9e2d', p:'2', play:1, hot:1, n:{hi:'गिल्ली-डंडा',en:'Gilli Danda',hinglish:'Gilli-Danda',bn:'গিল্লি-ডান্ডা'} }
+    { id:'gilli', ic:'🏏', c1:'#9be34a', c2:'#4e9e2d', p:'2', play:1, hot:1, n:{hi:'गिल्ली-डंडा',en:'Gilli Danda',hinglish:'Gilli-Danda',bn:'গিল্লি-ডান্ডা'} },
+    { id:'antakshari',ic:'🎤', c1:'#ff7ab6', c2:'#c2368a', p:'2+', play:1, hot:1, n:{hi:'अंताक्षरी',en:'Antakshari',hinglish:'Antakshari',bn:'অন্তাক্ষরী'} },
+    { id:'lattu', ic:'🌀', c1:'#ff8a3d', c2:'#c2501b', p:'2', play:1, hot:1, n:{hi:'लट्टू',en:'Spinning Tops',hinglish:'Lattu',bn:'লাট্টু'} },
+    { id:'pitthu',ic:'🪨', c1:'#c9a27a', c2:'#7d5a3c', p:'2', play:1, hot:1, n:{hi:'पिट्ठू',en:'Pitthu (Seven Stones)',hinglish:'Pitthu',bn:'পিট্টু'} },
+    { id:'ashta', ic:'🐚', c1:'#e8c07a', c2:'#a8742c', p:'2-4', play:1, hot:1, n:{hi:'अष्टा-चम्मा',en:'Ashta Chamma',hinglish:'Ashta-Chamma',bn:'অষ্টা-চম্মা'} }
   ];
 
   var L = {

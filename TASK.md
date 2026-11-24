@@ -35,6 +35,25 @@ _Updated: 2026-11-23_
 
 ---
 
+## 🔊 Sound (24 Nov, branch `feat/sound`)
+- `sound.js` — saari awaazein Web Audio se banti hain (koi file nahi). `DG.sfx(name, zor)`, `DG.result('win'|'lose'|'draw')`, `DG.buzz(ms)`. 🔊/🔇 button (home + game bar), localStorage `dg-sound`, default ON.
+
+## 🆕 Naye games — plan (24 Nov) · bane: अंताक्षरी, लट्टू, पिट्ठू, अष्टा-चम्मा (branch feat/sound, uncommitted) · baaki ek-ek karke, user ke kehne par · ❌ gambling wala koi game nahi (teen patti, satta, betting)
+Har game: 4 bhasha, Pass & Play + vs Computer, sound, `games/_kit.js` ke common result/style helpers.
+| # | Game | Khel kaise | Computer |
+|---|---|---|---|
+| 1 | **अंताक्षरी** | akshar milta hai, 20 sec mein gaana gao, saamne wale ✓/✗ den; gaane ka aakhri akshar chuno → doosri team ki baari; 100 point | akele: streak mode (3 jaan) |
+| 2 | **लट्टू** | gulel jaisa kheench ke lattu phenko (zor = ghumav), ghere mein takkar; ghumav khatam ya bahar = haar; 3 jhatke; best of 3 | computer phenkta + jhatke deta |
+| 3 | **पिट्ठू** | 7 patthar ka dher, ball se giraao (3 mauke), phir fielder ki ball aane se pehle bade se chhote patthar jamao | computer ki baari simulate |
+| 4 | **अष्टा-चम्मा** | 5×5 chaupad, 4 kauri: 4 khuli = चम्मा (4), 0 khuli = अष्टा (8) + ek aur baari; kaatna, safe ghar, andar ke ghere mein jaane se pehle ek kaat zaroori | lalchi AI (kaat > safe > aage) |
+| 5 | **स्टापू** | gitti phenko (power meter) sahi khaane mein, phir lay mein kood: akela khaana = ek pair, dohra = dono; gitti wala khaana chhodo | galti ki sambhavna ke saath |
+| 6 | **गुट्टे** | ek goti uchhalo, hawa mein rehte zameen se 1/2/3/4 goti uthao, phir giri goti pakdo; 4 level | computer ka score simulate |
+| 7 | **चिड़िया उड़** | "तोता उड़!" par tap, "भैंस उड़!" par nahi; tez hota jaata; 2 khiladi = upar/neeche button | computer ki reflex |
+| 8 | **ज़मीन-आसमान** | bulaane wala bole ज़मीन/आसमान, sahi aadha tap karo; chaalaki: ishara ulta | computer score |
+| 9 | **पोशम्पा** | gaane ki lay par darwaza upar-neeche; neeche se niklo, "chor pakda" par andar mat raho | computer bachcha |
+| 10 | **कबड्डी** | saans ke andar raid: defenders chhuo aur wapas aao; saans khatam ya 2 ne pakda = out; defend mein sahi waqt par "पकड़ो" | computer raid + defend |
+| 11 | **खो-खो** | baithe chaser ko "खो" dekar daudne wale pakdo, 60 sec | computer runners + computer ki chase |
+
 ## ⏳ BAAKI / AGLA KAAM
 - [ ] **Cricket ONLINE** (alag phone) — engine ready, bas dono ke hidden picks sync karne hain
 - [ ] **साँप-सीढ़ी online**

@@ -63,7 +63,7 @@
     }
     return b.map(function (o) { return { k: o.k, x: o.x, y: o.y, vx: 0, vy: 0, r: RC, m: 1, in: false }; });
   }
-  function step(bs) {
+  function step(bs, ev) { // ev(kind, strength|body): sound hook, only for the real shot (not AI simulation)
     var i, j, a, b;
     for (i = 0; i < bs.length; i++) {
       a = bs[i]; if (a.in) continue;
@@ -71,8 +71,10 @@
       var ns = Math.max(0, sp - DEC * DT - sp * DAMP * DT);
       if (ns < 3) { a.vx = a.vy = 0; } else { a.vx *= ns / sp; a.vy *= ns / sp; }
       a.x += a.vx * DT; a.y += a.vy * DT;
-      if (a.x < a.r) { a.x = a.r; a.vx = -a.vx * E_WALL; } else if (a.x > W - a.r) { a.x = W - a.r; a.vx = -a.vx * E_WALL; }
-      if (a.y < a.r) { a.y = a.r; a.vy = -a.vy * E_WALL; } else if (a.y > W - a.r) { a.y = W - a.r; a.vy = -a.vy * E_WALL; }
+      var hw = 0;
+      if (a.x < a.r) { a.x = a.r; hw = a.vx; a.vx = -a.vx * E_WALL; } else if (a.x > W - a.r) { a.x = W - a.r; hw = a.vx; a.vx = -a.vx * E_WALL; }
+      if (a.y < a.r) { a.y = a.r; hw = a.vy; a.vy = -a.vy * E_WALL; } else if (a.y > W - a.r) { a.y = W - a.r; hw = a.vy; a.vy = -a.vy * E_WALL; }
+      if (ev && hw) ev('thud', Math.min(1, Math.abs(hw) / VMAX * 1.6));
     }
     for (i = 0; i < bs.length; i++) {
       a = bs[i]; if (a.in) continue;
@@ -84,13 +86,13 @@
         a.x -= nx * ov * (1 / a.m) / im; a.y -= ny * ov * (1 / a.m) / im;
         b.x += nx * ov * (1 / b.m) / im; b.y += ny * ov * (1 / b.m) / im;
         var vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
-        if (vn < 0) { var jj = -(1 + E_BALL) * vn / im; a.vx -= jj * nx / a.m; a.vy -= jj * ny / a.m; b.vx += jj * nx / b.m; b.vy += jj * ny / b.m; }
+        if (vn < 0) { if (ev && vn < -40) ev('clack', Math.min(1, -vn / VMAX * 1.8)); var jj = -(1 + E_BALL) * vn / im; a.vx -= jj * nx / a.m; a.vy -= jj * ny / a.m; b.vx += jj * nx / b.m; b.vy += jj * ny / b.m; }
       }
     }
     var moving = false;
     for (i = 0; i < bs.length; i++) {
       a = bs[i]; if (a.in) continue;
-      for (j = 0; j < 4; j++) { var p = POCKETS[j]; if (Math.hypot(a.x - p[0], a.y - p[1]) < PR) { a.in = true; a.vx = a.vy = 0; break; } }
+      for (j = 0; j < 4; j++) { var p = POCKETS[j]; if (Math.hypot(a.x - p[0], a.y - p[1]) < PR) { a.in = true; a.vx = a.vy = 0; if (ev) ev('pocket', a); break; } }
       if (!a.in && (a.vx || a.vy)) moving = true;
     }
     return moving;
@@ -326,16 +328,21 @@
         phase = 'shoot'; msg = ''; render();
         var s = striker(x, turn); s.vx = Math.cos(ang) * pow * VMAX; s.vy = Math.sin(ang) * pow * VMAX;
         shotStart = bodies.map(function (o) { return o.in; });
-        bodies.push(s); aim = null;
+        bodies.push(s); aim = null; DG.sfx('strike', pow);
         var steps = 0;
         (function frame() {
           if (dead) return;
           var moving = false;
-          for (var i = 0; i < 4; i++) { moving = step(bodies); steps++; }
+          for (var i = 0; i < 4; i++) { moving = step(bodies, onHit); steps++; }
           draw();
           if (moving && steps < 240 * 14) raf = requestAnimationFrame(frame);
           else settle();
         })();
+      }
+
+      function onHit(kind, x) {
+        if (kind === 'pocket') { if (x.k === 'q') { DG.sfx('queen'); DG.buzz(60); } else if (x.k === 's') DG.sfx('buzz'); else DG.sfx('pocket'); }
+        else DG.sfx(kind, x);
       }
 
       function backToCentre(o) { var p = freeSpot(bodies); o.in = false; o.x = p[0]; o.y = p[1]; o.vx = o.vy = 0; }
@@ -374,7 +381,7 @@
       }
 
       function finish(w) {
-        phase = 'over';
+        phase = 'over'; DG.result(mode === 'ai' && w !== 0 ? 'lose' : 'win');
         var pts = left(COLOR[1 - w]) + (queenOwner === w ? 3 : 0);
         var txt = mode === 'ai' ? (w === 0 ? DG.t().youWin : DG.t().youLose) : DG.t().wins(pname(w));
         root.innerHTML = '';

@@ -143,20 +143,26 @@
     field.classList.add('bowl');                 // 1) bowler runs up (carrying the ball) to the crease
     ball.style.transition='transform .46s ease-in'; ball.style.transform='translate(0,0)';   // ball moves WITH the bowler
     setTimeout(function(){                         // 2) release: ball speeds UP the pitch to the batsman
+      DG.sfx('swish');
       ball.style.transition='transform .5s linear'; ball.style.transform='translate(0px,-142px)';
     }, 820);
     setTimeout(function(){                          // 3) ball reaches the batsman
       field.classList.add('swing');                // 4) batsman swings and hits
       setTimeout(function(){                         // 5) ball goes where the shot sent it
+        var bowled = result.out && Math.random() < 0.4;
+        DG.sfx(bowled ? 'wicket' : 'bat');
         if (result.out){
-          if (Math.random() < 0.4){ field.classList.add('out'); mv(ball, 150, 46, .34); }  // bowled
+          if (bowled){ field.classList.add('out'); mv(ball, 150, 46, .34); }  // bowled
           else { var fi=Math.floor(Math.random()*FIELDERS.length), f=FIELDERS[fi]; mv(ball, f[0], f[1], .5); pulse(flds[fi], 1.9); }  // caught
         }
         else if (result.runs===6){ ball.style.transition='transform .72s cubic-bezier(.2,.7,.3,1)'; ball.style.transform='translate(70px,-175px)'; }  // over the top
         else if (result.runs===4){ var bp=BOUNDARY[Math.floor(Math.random()*BOUNDARY.length)]; mv(ball, bp[0], bp[1], .62); }  // races to the boundary
         else if (result.runs>0){ var gi=Math.floor(Math.random()*FIELDERS.length), g=FIELDERS[gi]; mv(ball, g[0], g[1], .5); pulse(flds[gi], 1.5); }  // fielded
         else { mv(ball, 150, 96, .3); }  // defended, near the batsman
-        setTimeout(function(){ cb && cb(); }, 700);
+        setTimeout(function(){
+          if (result.out){ DG.sfx('buzz'); DG.buzz(80); } else if (result.runs===6){ DG.sfx('crowd'); DG.buzz([30,40,30]); } else if (result.runs===4) DG.sfx('drum'); else if (result.runs>0) DG.sfx('step');
+          cb && cb();
+        }, 700);
       }, 170);
     }, 820+500);
   }
@@ -194,7 +200,7 @@
         var maxWk=Math.max(3, Math.ceil(overs*1.2));
         S={overs:overs, maxWk:maxWk, innings:1, score:[0,0], wk:[0,0], balls:[0,0], log:[[],[]], tossWinner:winner, bat:null, target:null, bowlType:null};
         var n=el('div','ck-stage');
-        n.appendChild(el('div','ck-ball','🪙'));
+        n.appendChild(el('div','ck-ball','🪙')); DG.sfx('ting');
         n.appendChild(el('div','ck-prompt',L().tossWon(pname(winner))));
         screen(n);
         setTimeout(function(){ chooseBB(winner); }, 1100);
@@ -355,6 +361,8 @@
         var first=S.bat===0?1:0, chaser=S.bat;  // chaser batted 2nd
         var sc1=S.score[first], sc2=S.score[chaser];
         var t=DG.t(), txt, by;
+        var winSide = sc2>=S.target ? chaser : (sc2===sc1 ? -1 : first);
+        DG.result(winSide<0 ? 'draw' : (mode==='ai' && winSide!==0 ? 'lose' : 'win'));
         if (sc2>=S.target){ by=L().byWk(S.maxWk-S.wk[chaser]); txt=L().won(pname(chaser),by); }
         else if (sc2===sc1){ txt=L().tie; }
         else { by=L().byRuns(sc1-sc2); txt=L().won(pname(first),by); }

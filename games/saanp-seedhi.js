@@ -69,7 +69,7 @@
       }
 
       function finish(){
-        over=true; var t=DG.t(); var txt = (mode==='ai') ? (turn===0? t.youWin : t.youLose) : t.wins(pname(turn));
+        over=true; DG.result(mode==='ai' && turn===1 ? 'lose' : 'win'); var t=DG.t(); var txt = (mode==='ai') ? (turn===0? t.youWin : t.youLose) : t.wins(pname(turn));
         var r=document.createElement('div'); r.className='kk-result'; r.innerHTML='<div class="rt">'+txt+'</div>';
         var acts=document.createElement('div'); acts.className='kk-actions';
         var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=start;
@@ -81,10 +81,10 @@
       function step(d){
         var np = pos[turn] + d;
         if (np > 100){ renderCards(); nextIfNeeded(d); return; } // overshoot: stay
-        pos[turn] = np; renderTokens();
+        pos[turn] = np; renderTokens(); DG.sfx('step');
         setTimeout(function(){
-          if (LAD[pos[turn]]){ pos[turn]=LAD[pos[turn]]; renderTokens(); }
-          else if (SNK[pos[turn]]){ pos[turn]=SNK[pos[turn]]; renderTokens(); }
+          if (LAD[pos[turn]]){ pos[turn]=LAD[pos[turn]]; renderTokens(); DG.sfx('ladder'); }
+          else if (SNK[pos[turn]]){ pos[turn]=SNK[pos[turn]]; renderTokens(); DG.sfx('snake'); DG.buzz(80); }
           if (pos[turn] === 100){ return finish(); }
           nextIfNeeded(d);
         }, 260);
@@ -97,11 +97,11 @@
 
       function roll(){
         if (over || rolling) return;
-        rolling=true; dice.classList.add('roll'); renderCards();
+        rolling=true; dice.classList.add('roll'); renderCards(); DG.sfx('dice');
         var d = 1 + Math.floor(Math.random()*6);
         setTimeout(function(){
           dice.classList.remove('roll'); dice.innerHTML = diceFace(d);
-          rolling=false; step(d);
+          rolling=false; if (d===6) DG.sfx('bonus'); step(d);
         }, 450);
       }
       dice.onclick = function(){ if (!(mode==='ai' && turn===1)) roll(); };
