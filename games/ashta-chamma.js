@@ -19,19 +19,19 @@
     '.ac-opts i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-left:4px;}');
 
   var CL = {
-    hi: { pick: 'कितने खिलाड़ी?', np: function (n) { return n + ' खिलाड़ी'; }, vs: function (n) { return 'तुम + ' + n + ' कंप्यूटर'; }, colors: ['लाल', 'हरा', 'पीला', 'नीला'],
+    hi: { youTurn: 'तुम्हारी बारी', pick: 'कितने खिलाड़ी?', np: function (n) { return n + ' खिलाड़ी'; }, vs: function (n) { return 'तुम + ' + n + ' कंप्यूटर'; }, colors: ['लाल', 'हरा', 'पीला', 'नीला'],
       turn: function (n) { return n + ' की बारी'; }, throwB: '🐚 कौड़ी फेंको', pickTok: 'कौन-सी गोटी चलाओगे? चमकती गोटी पर टैप करो', noMove: 'कोई चाल नहीं — अगली बारी', you: 'तुम', comp: function (c) { return 'कंप्यूटर (' + c + ')'; },
       ashta: 'अष्टा! 8 + एक और बारी', chamma: 'चम्मा! 4 + एक और बारी', cut: '✂️ काट दी! एक और बारी', home: '🏠 बीच में पहुँची!', needCut: 'अंदर जाने से पहले एक गोटी काटनी होगी',
       rules: '1–3 खुली कौड़ी = उतने घर। 4 खुली = चम्मा (4), 0 खुली = अष्टा (8) — दोनों पर एक और बारी। ✕ वाले घर सुरक्षित। अंदर के घेरे में जाने से पहले एक गोटी काटना ज़रूरी। चारों गोटी बीच में = जीत।' },
-    en: { pick: 'How many players?', np: function (n) { return n + ' players'; }, vs: function (n) { return 'You + ' + n + ' computer'; }, colors: ['Red', 'Green', 'Yellow', 'Blue'],
+    en: { youTurn: 'Your turn', pick: 'How many players?', np: function (n) { return n + ' players'; }, vs: function (n) { return 'You + ' + n + ' computer'; }, colors: ['Red', 'Green', 'Yellow', 'Blue'],
       turn: function (n) { return n + "'s turn"; }, throwB: '🐚 Throw kauri', pickTok: 'Which piece? Tap a glowing one', noMove: 'No move — next turn', you: 'You', comp: function (c) { return 'Computer (' + c + ')'; },
       ashta: 'Ashta! 8 + another throw', chamma: 'Chamma! 4 + another throw', cut: '✂️ Cut! Another throw', home: '🏠 Reached the centre!', needCut: 'Cut one piece before entering the inner ring',
       rules: '1–3 open shells = that many squares. 4 open = Chamma (4), none open = Ashta (8) — both give another throw. ✕ squares are safe. Cut one piece before entering the inner ring. All 4 pieces in the centre wins.' },
-    hinglish: { pick: 'Kitne khiladi?', np: function (n) { return n + ' khiladi'; }, vs: function (n) { return 'Tum + ' + n + ' computer'; }, colors: ['Laal', 'Hara', 'Peela', 'Neela'],
+    hinglish: { youTurn: 'Tumhari baari', pick: 'Kitne khiladi?', np: function (n) { return n + ' khiladi'; }, vs: function (n) { return 'Tum + ' + n + ' computer'; }, colors: ['Laal', 'Hara', 'Peela', 'Neela'],
       turn: function (n) { return n + ' ki baari'; }, throwB: '🐚 Kauri phenko', pickTok: 'Kaunsi goti chalaoge? Chamakti goti par tap karo', noMove: 'Koi chaal nahi — agli baari', you: 'Tum', comp: function (c) { return 'Computer (' + c + ')'; },
       ashta: 'Ashta! 8 + ek aur baari', chamma: 'Chamma! 4 + ek aur baari', cut: '✂️ Kaat di! Ek aur baari', home: '🏠 Beech mein pahunchi!', needCut: 'Andar jaane se pehle ek goti kaatni hogi',
       rules: '1–3 khuli kauri = utne ghar. 4 khuli = Chamma (4), 0 khuli = Ashta (8) — dono par ek aur baari. ✕ wale ghar safe. Andar ke ghere mein jaane se pehle ek goti kaatna zaroori. Chaaron goti beech mein = jeet.' },
-    bn: { pick: 'কতজন খেলোয়াড়?', np: function (n) { return n + ' জন'; }, vs: function (n) { return 'তুমি + ' + n + ' কম্পিউটার'; }, colors: ['লাল', 'সবুজ', 'হলুদ', 'নীল'],
+    bn: { youTurn: 'তোমার পালা', pick: 'কতজন খেলোয়াড়?', np: function (n) { return n + ' জন'; }, vs: function (n) { return 'তুমি + ' + n + ' কম্পিউটার'; }, colors: ['লাল', 'সবুজ', 'হলুদ', 'নীল'],
       turn: function (n) { return n + '-এর পালা'; }, throwB: '🐚 কড়ি চালো', pickTok: 'কোন গুটি চালবে? জ্বলজ্বলে গুটিতে ট্যাপ করো', noMove: 'চাল নেই — পরের পালা', you: 'তুমি', comp: function (c) { return 'কম্পিউটার (' + c + ')'; },
       ashta: 'অষ্টা! ৮ + আরেক দান', chamma: 'চম্মা! ৪ + আরেক দান', cut: '✂️ কেটে দিয়েছ! আরেক দান', home: '🏠 মাঝখানে পৌঁছেছে!', needCut: 'ভেতরের ঘরে যেতে আগে একটা গুটি কাটতে হবে',
       rules: '১–৩টে খোলা কড়ি = ততো ঘর। ৪টে খোলা = চম্মা (৪), একটাও খোলা নয় = অষ্টা (৮) — দুটোতেই আরেক দান। ✕ ঘর নিরাপদ। ভেতরের ঘরে ঢোকার আগে একটা গুটি কাটা দরকার। চারটে গুটি মাঝখানে = জয়।' }
@@ -104,7 +104,7 @@
 
       function render() {
         X = L(); var p = cur();
-        chip.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + COL[p] + ';margin-right:6px"></span>' + K.esc(X.turn(nameOf(p)));
+        chip.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:' + COL[p] + ';margin-right:6px"></span>' + K.esc(mode === 'ai' && human[p] ? X.youTurn : X.turn(nameOf(p)));
         btnT.textContent = X.throwB; btnT.disabled = !(phase === 'throw' && human[p]);
         var s = '', U = 60;
         for (var r = 0; r < 5; r++) for (var cc = 0; cc < 5; cc++) {

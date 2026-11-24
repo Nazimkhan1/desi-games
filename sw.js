@@ -2,8 +2,8 @@
    falling back to the cache when there is no internet (pass-play & vs-computer still work). */
 var CACHE = 'desi-games-v7';
 var ASSETS = ['./','./index.html','./app.css','./i18n.js','./sound.js','./app.js','./net.js','./firebase-config.js','./firebase-net.js',
-  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js','./games/carrom.js','./games/patang.js','./games/chor-sipahi.js','./games/kanche.js','./games/gilli-danda.js','./games/_kit.js','./games/antakshari.js','./games/lattu.js','./games/pitthu.js','./games/ashta-chamma.js',
-  './manifest.webmanifest','./icons/icon.svg','./icons/favicon.svg','./icons/icon-192.png'];
+  './games/kattam-katti.js','./games/saanp-seedhi.js','./games/cricket.js','./games/nau-goti.js','./games/ludo.js','./games/bagh-bakri.js','./games/carrom.js','./games/patang.js','./games/chor-sipahi.js','./games/kanche.js','./games/gilli-danda.js','./games/_kit.js','./games/antakshari.js','./games/lattu.js','./games/pitthu.js','./games/ashta-chamma.js','./games/chidiya-udd.js',
+  './games/zameen-aasmaan.js','./games/stapu.js','./games/gutte.js','./games/posham-pa.js','./games/kabaddi.js','./games/kho-kho.js','./manifest.webmanifest','./icons/icon.svg','./icons/favicon.svg','./icons/icon-192.png'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function(){ return self.skipWaiting(); })); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return k !== CACHE ? caches.delete(k) : null; })); }).then(function(){ return self.clients.claim(); })); });
 self.addEventListener('fetch', function (e) {

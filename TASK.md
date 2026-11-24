@@ -38,7 +38,7 @@ _Updated: 2026-11-23_
 ## 🔊 Sound (24 Nov, branch `feat/sound`)
 - `sound.js` — saari awaazein Web Audio se banti hain (koi file nahi). `DG.sfx(name, zor)`, `DG.result('win'|'lose'|'draw')`, `DG.buzz(ms)`. 🔊/🔇 button (home + game bar), localStorage `dg-sound`, default ON.
 
-## 🆕 Naye games — plan (24 Nov) · bane: अंताक्षरी, लट्टू, पिट्ठू, अष्टा-चम्मा (branch feat/sound, uncommitted) · baaki ek-ek karke, user ke kehne par · ❌ gambling wala koi game nahi (teen patti, satta, betting)
+## 🆕 Naye games (24 Nov) · ✅ saare 11 bane (branch feat/sound; pehle 4 commit 0e91940, baaki 7 uncommitted) · ❌ gambling wala koi game nahi
 Har game: 4 bhasha, Pass & Play + vs Computer, sound, `games/_kit.js` ke common result/style helpers.
 | # | Game | Khel kaise | Computer |
 |---|---|---|---|

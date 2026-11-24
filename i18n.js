@@ -15,7 +15,14 @@ window.DG = (function () {
     { id:'antakshari',ic:'🎤', c1:'#ff7ab6', c2:'#c2368a', p:'2+', play:1, hot:1, n:{hi:'अंताक्षरी',en:'Antakshari',hinglish:'Antakshari',bn:'অন্তাক্ষরী'} },
     { id:'lattu', ic:'🌀', c1:'#ff8a3d', c2:'#c2501b', p:'2', play:1, hot:1, n:{hi:'लट्टू',en:'Spinning Tops',hinglish:'Lattu',bn:'লাট্টু'} },
     { id:'pitthu',ic:'🪨', c1:'#c9a27a', c2:'#7d5a3c', p:'2', play:1, hot:1, n:{hi:'पिट्ठू',en:'Pitthu (Seven Stones)',hinglish:'Pitthu',bn:'পিট্টু'} },
-    { id:'ashta', ic:'🐚', c1:'#e8c07a', c2:'#a8742c', p:'2-4', play:1, hot:1, n:{hi:'अष्टा-चम्मा',en:'Ashta Chamma',hinglish:'Ashta-Chamma',bn:'অষ্টা-চম্মা'} }
+    { id:'ashta', ic:'🐚', c1:'#e8c07a', c2:'#a8742c', p:'2-4', play:1, hot:1, n:{hi:'अष्टा-चम्मा',en:'Ashta Chamma',hinglish:'Ashta-Chamma',bn:'অষ্টা-চম্মা'} },
+    { id:'chidiya',ic:'🐦', c1:'#7fd3ff', c2:'#2f8fd6', p:'2', play:1, hot:1, n:{hi:'चिड़िया उड़',en:'Bird Flies',hinglish:'Chidiya Udd',bn:'পাখি ওড়ে'} },
+    { id:'zameen',ic:'☁️', c1:'#8fd0ff', c2:'#6b8f3a', p:'2', play:1, n:{hi:'ज़मीन-आसमान',en:'Sky or Ground',hinglish:'Zameen-Aasmaan',bn:'মাটি-আকাশ'} },
+    { id:'stapu', ic:'🦶', c1:'#ffb36b', c2:'#c46a2b', p:'2', play:1, n:{hi:'स्टापू',en:'Hopscotch',hinglish:'Stapu',bn:'এক্কা-দোক্কা'} },
+    { id:'gutte', ic:'✊', c1:'#ffd36b', c2:'#c98a2b', p:'2', play:1, n:{hi:'गुट्टे',en:'Five Stones',hinglish:'Gutte',bn:'পাঁচ গুটি'} },
+    { id:'posham', ic:'🙌', c1:'#ff9ad5', c2:'#a64fd6', p:'2', play:1, n:{hi:'पोशम्पा',en:'Posham Pa',hinglish:'Posham Pa',bn:'পোশম পা'} },
+    { id:'kabaddi',ic:'🤼', c1:'#ff9a5a', c2:'#c0392b', p:'2', play:1, hot:1, n:{hi:'कबड्डी',en:'Kabaddi',hinglish:'Kabaddi',bn:'কাবাডি'} },
+    { id:'khokho',ic:'🏃', c1:'#7be0a0', c2:'#1e9e5a', p:'2', play:1, hot:1, n:{hi:'खो-खो',en:'Kho-Kho',hinglish:'Kho-Kho',bn:'খো-খো'} }
   ];
 
   var L = {
