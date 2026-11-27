@@ -53,7 +53,7 @@
 
       function markGlyph(m){ return m==='X' ? '✕' : '◯'; }
       function label(m){ var t=DG.t();
-        if (mode==='online') return m===myMark ? t.you : t.navFriends;
+        if (mode==='online') return m===myMark ? t.you : ((opts.opp&&opts.opp.name)||t.navFriends);
         if (mode==='ai') return m==='X' ? t.you : t.computer;
         return m==='X' ? t.p1 : t.p2;
       }

@@ -1,6 +1,6 @@
 # Desi Games — Progress (kitna hua)
 
-_Updated: 2026-11-23_
+_Updated: 2026-11-28_
 
 **Live:** https://desi-games.nextgrade.in (GitHub Pages, repo public-for-now → baad mein private; HTTPS on)
 **Repo:** github.com/Nazimkhan1/desi-games
@@ -54,9 +54,16 @@ Har game: 4 bhasha, Pass & Play + vs Computer, sound, `games/_kit.js` ke common 
 | 10 | **कबड्डी** | saans ke andar raid: defenders chhuo aur wapas aao; saans khatam ya 2 ne pakda = out; defend mein sahi waqt par "पकड़ो" | computer raid + defend |
 | 11 | **खो-खो** | baithe chaser ko "खो" dekar daudne wale pakdo, 60 sec | computer runners + computer ki chase |
 
+## 👥🏆🙂 Dost · Rank · Main + Gmail login (28 Nov)
+- `pages.js`: Dost (room banao/judo, online games, jinke saath khele, WhatsApp invite), Rank (7 titles, XP bar, game table, 14 tamge, 🌍 sabki rank top 50), Main (naam, 18 chehre — sikkon se unlock, hisaab, bhasha/aawaz, record mitao)
+- Stats: har game ka `DG.result` app.js mein record hota hai (localStorage `dg-stats`); XP jeet 30/barabar 15/haar 10/pass 12, roz pehla khel +20 sikke
+- **Saanp-Seedhi ONLINE** (dice roller bhejta hai, dusra wahi chalta hai); online mein saamne wale ka naam dikhta hai; invite link `?join=CODE`
+- **Gmail login optional** (Firebase Google provider, anonymous → linkWithPopup): record `users/{uid}`, rank `lb/{uid}`; rules FIREBASE.md §6 (published 27 Nov)
+- `privacy.html` — Google branding verify ke liye (Branding page: home + privacy link + domain nextgrade.in, phir **Verify branding**)
+
 ## ⏳ BAAKI / AGLA KAAM
 - [ ] **Cricket ONLINE** (alag phone) — engine ready, bas dono ke hidden picks sync karne hain
-- [ ] **साँप-सीढ़ी online**
+- [x] **साँप-सीढ़ी online** (28 Nov)
 - [ ] Cricket: named teams / 11 players / batting order; balance tuning
 - [ ] **Ludo online** (2–4 phone)
 - [ ] Carrom 4 khiladi (2v2) + online

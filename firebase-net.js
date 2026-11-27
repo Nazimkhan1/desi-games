@@ -19,7 +19,11 @@
     return load('https://www.gstatic.com/firebasejs/' + V + '/firebase-app-compat.js')
       .then(function () { return load('https://www.gstatic.com/firebasejs/' + V + '/firebase-database-compat.js'); })
       .then(function () { return load('https://www.gstatic.com/firebasejs/' + V + '/firebase-auth-compat.js'); })
-      .then(function () { firebase.initializeApp(cfg); return firebase.auth().signInAnonymously(); })
+      .then(function () {
+        firebase.initializeApp(cfg);
+        // keep a saved Google login; only start an anonymous session when nobody is signed in
+        return new Promise(function (res) { var off = firebase.auth().onAuthStateChanged(function (u) { off(); res(u || firebase.auth().signInAnonymously()); }); });
+      })
       .then(function () { return firebase.database(); })
       .catch(function (e) { console.error('[DG] Firebase init failed:', e && e.message); return null; });
   })();
@@ -72,5 +76,30 @@
   }
 
   DG.net = { create: create, join: join, available: true, kind: 'firebase' };
+
+  /* Optional Google login (Gmail). Anonymous play keeps working without it.
+     Signing in upgrades the anonymous user (linkWithPopup) so the same uid is kept. */
+  function cur() { try { return firebase.auth().currentUser; } catch (e) { return null; } }
+  DG.fb = {
+    ready: ready,
+    user: cur,
+    isGoogle: function () { var u = cur(); return !!(u && !u.isAnonymous && (u.providerData || []).some(function (p) { return p && p.providerId === 'google.com'; })); },
+    signIn: function () {
+      return ready.then(function (db) {
+        if (!db) throw { code: 'offline' };
+        var pr = new firebase.auth.GoogleAuthProvider(); pr.setCustomParameters({ prompt: 'select_account' });
+        var u = cur();
+        if (u && u.isAnonymous) return u.linkWithPopup(pr).catch(function (e) {
+          // this Gmail already has a Desi Games account → just sign in to it
+          if (e && (e.code === 'auth/credential-already-in-use' || e.code === 'auth/email-already-in-use') && e.credential) return firebase.auth().signInWithCredential(e.credential);
+          throw e;
+        });
+        return firebase.auth().signInWithPopup(pr);
+      });
+    },
+    signOut: function () { return ready.then(function () { return firebase.auth().signOut(); }).then(function () { return firebase.auth().signInAnonymously(); }); },
+    onChange: function (fn) { ready.then(function (db) { if (db) firebase.auth().onAuthStateChanged(fn); }); },
+    db: function () { return ready; }
+  };
   console.log('[DG] Firebase online transport active');
 })();

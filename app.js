@@ -3,7 +3,9 @@
   var $ = function (id) { return document.getElementById(id); };
   var set = function (id, v) { var e = $(id); if (e) e.textContent = v; };
 
-  var CUR = null, roomMode = 'create', activeGame = null;
+  var CUR = null, roomMode = 'create', activeGame = null, curMode = null, opp = null, tab = 'home';
+  function meInfo() { var m = DG.stats.me(); return { name: m.name, face: m.face }; }
+  function cleanOpp(m) { var c = function (x, n) { return String(x).replace(/[<>&"'`]/g, '').trim().slice(0, n); }; return (m && m.name && c(m.name, 16)) ? { name: c(m.name, 16), face: c(m.face || '🧑🏻', 8) || '🧑🏻' } : null; }
 
   /* ---------- lobby render ---------- */
   function renderGrid() {
@@ -37,7 +39,7 @@
 
   function applyLang() {
     var t = DG.t();
-    set('brandName', t.brand); set('langLbl', t.langName); set('lvl', t.level); set('liveTxt', t.online('2,418'));
+    set('brandName', t.brand); set('langLbl', t.langName); DG.stats.paintHud();
     set('heroTitle', t.heroTitle); set('heroSub', t.heroSub); set('btnCreate', t.create); set('btnJoin', t.join);
     set('secTitle', t.allGames); set('secAll', t.all); set('note', t.note);
     set('mOnlineT', t.online_t); set('mOnlineS', t.online_s); set('mPassT', t.pass_t); set('mPassS', t.pass_s); set('mAiT', t.ai_t); set('mAiS', t.ai_s);
@@ -46,7 +48,7 @@
       var map = { home: t.navHome, friends: t.navFriends, rank: t.navRank, me: t.navMe };
       b.querySelector('.nt').textContent = map[b.dataset.nav];
     });
-    renderGrid(); buildLangMenu();
+    renderGrid(); buildLangMenu(); if (tab !== 'home') showTab(tab);
     if (CUR) { set('sHi', DG.gname(CUR)); set('sEn', CUR.n.en); set('rGame', DG.gname(CUR)); }
     set('rTitle', roomMode === 'join' ? t.roomJoin : t.roomCreated);
     set('rSub', roomMode === 'join' ? t.enterCode : t.sendCode);
@@ -83,14 +85,16 @@
     set('rIc', game.ic); set('rGame', DG.gname(game));
     set('rTitle', t.roomCreated); set('rSub', t.sendCode); set('rWait', nt().wait);
     $('codeBox').classList.remove('hide'); $('rPlayers').classList.remove('hide'); $('rShareBtns').classList.remove('hide'); $('joinBox').classList.remove('show');
-    var gs = $('rGuest'); gs.classList.add('wait'); gs.querySelector('.pa').textContent = '?';
+    var gs = $('rGuest'); gs.classList.add('wait'); gs.querySelector('.pa').textContent = '?'; gs.querySelector('span').textContent = nt().wait;
+    var mi = meInfo(); $('rPlayers').querySelector('.me .pa').textContent = mi.face; set('rYou', mi.name); opp = null;
     room = DG.net.create(game.id);
     var cEl = $('rCode'); cEl.textContent = room.code.split('').join(' '); cEl.dataset.raw = room.code;
     var started = false;
-    room.on('hello', function () {
-      room.send('start', { game: roomGame.id });
-      if (started) return; started = true;
-      var g2 = $('rGuest'); g2.classList.remove('wait'); g2.querySelector('.pa').textContent = '🧑🏻'; g2.querySelector('span').textContent = nt().joined;
+    room.on('hello', function (m) {
+      var mi = meInfo();
+      room.send('start', { game: roomGame.id, name: mi.name, face: mi.face });
+      if (started) return; started = true; opp = cleanOpp(m);
+      var g2 = $('rGuest'); g2.classList.remove('wait'); g2.querySelector('.pa').textContent = opp ? opp.face : '🧑🏻'; g2.querySelector('span').textContent = opp ? opp.name : nt().joined;
       setTimeout(function () { launchOnline(roomGame, 'host', room); }, 550);
     });
     showRoom();
@@ -116,23 +120,23 @@
       room = r;
       var launched = false;
       r.on('start', function (m) {
-        if (launched) return; launched = true;
+        if (launched) return; launched = true; opp = cleanOpp(m);
         var g = (r.gameId && gameById(r.gameId)) || gameById(m && m.game) || onlineGame();
         roomGame = g; launchOnline(g, 'guest', r);
       });
-      r.send('hello', {});
+      var mi = meInfo(); r.send('hello', { name: mi.name, face: mi.face });
       setTimeout(function () { if (!launched && $('room').classList.contains('show')) { toast(nt().nf); closeRoom(); } }, 6000);
     }, function () { $('rJoinBtn').disabled = false; toast(nt().nf); });
   }
 
   function launchOnline(game, role, net) {
     $('room').classList.remove('show');
-    CUR = game;
+    CUR = game; curMode = 'online';
     var t = DG.t(), mp = t.online_t.split('—');
     set('gameTitle', DG.gname(game)); set('gameMode', mp[1] ? mp[1].trim() : 'Online');
     var factory = DG.getGame(game.id);
     var wrap = $('gameWrap'); wrap.innerHTML = '';
-    activeGame = factory.mount(wrap, { mode: 'online', game: game, net: net, role: role, onExit: exitOnline });
+    activeGame = factory.mount(wrap, { mode: 'online', game: game, net: net, role: role, opp: opp, onExit: exitOnline });
     $('gameRoot').classList.add('show');
   }
   function exitOnline() { if (room) { try { room.close(); } catch (e) {} room = null; } exitGame(); }
@@ -142,7 +146,7 @@
     closeSheet();
     var factory = DG.getGame(game.id);
     if (!factory) { toast(DG.t().tGameSoon); return; }
-    CUR = game;
+    CUR = game; curMode = mode;
     var t = DG.t();
     set('gameTitle', DG.gname(game));
     set('gameMode', mode === 'pass' ? t.pass_t.split('—')[1].trim() : t.ai_t.split('—')[1].trim());
@@ -152,7 +156,8 @@
   }
   function exitGame() {
     if (activeGame && activeGame.destroy) activeGame.destroy();
-    activeGame = null; $('gameRoot').classList.remove('show'); $('gameWrap').innerHTML = '';
+    activeGame = null; curMode = null; $('gameRoot').classList.remove('show'); $('gameWrap').innerHTML = '';
+    if (tab !== 'home') showTab(tab); else DG.stats.paintHud();
   }
 
   /* ---------- share / copy ---------- */
@@ -188,15 +193,38 @@
   $('rWa').onclick = function () { copyText(DG.t().invite(DG.gname(CUR || DG.GAMES[0]), $('rCode').dataset.raw || '7429'), DG.t().tInvite); };
   $('rCopy').onclick = function () { copyText($('rCode').dataset.raw || '', DG.t().tCopied); };
   $('gameBack').onclick = exitGame;
+  /* ---------- tabs: home / friends / rank / me ---------- */
+  var pageApi = {
+    create: function (g) { startCreate(g); }, join: function () { startJoin(); }, toast: toast,
+    setLang: function (code) { DG.setLang(code); applyLang(); }, redraw: function () { showTab(tab); }
+  };
+  function showTab(name) {
+    tab = name;
+    document.querySelectorAll('.nav .nb').forEach(function (x) { x.classList.toggle('on', x.dataset.nav === name); });
+    var home = document.querySelector('.app > main'), pg = $('page');
+    if (name === 'home') { home.hidden = false; pg.hidden = true; pg.innerHTML = ''; }
+    else { home.hidden = true; pg.hidden = false; DG.pages.show(name, pg, pageApi); }
+    DG.stats.paintHud();
+  }
   document.querySelectorAll('.nav .nb').forEach(function (b) {
-    b.onclick = function () {
-      document.querySelectorAll('.nav .nb').forEach(function (x) { x.classList.remove('on'); });
-      b.classList.add('on');
-      if (b.dataset.nav !== 'home') toast(DG.t().tSoon(DG.t().navSoon[b.dataset.nav]));
-    };
+    b.onclick = function () { var same = tab === b.dataset.nav; showTab(b.dataset.nav); if (!same) window.scrollTo(0, 0); };
   });
 
+  /* every game ends with DG.result(kind) → keep the player's record (this phone only) */
+  var baseResult = DG.result;
+  DG.result = function (kind) {
+    baseResult(kind);
+    var r = DG.stats.record(CUR && CUR.id, curMode, kind, curMode === 'online' ? opp : null);
+    if (r) setTimeout(function () { toast(r.levelUp ? '🎉 ' + DG.t().level.replace(/[0-9০-৯]+/g, '').trim() + ' ' + r.levelUp + '!' : '+' + r.xp + ' XP · 🪙 +' + r.coins); }, 900);
+  };
+
+  window.addEventListener('dg-auth', function () { if (tab === 'me' || tab === 'rank') showTab(tab); DG.stats.paintHud(); });
   applyLang();
+
+  // invite link: desi-games.nextgrade.in/?join=1234 opens the join screen with the code filled
+  (function () { var m = /[?&]join=(\d{4})/.exec(location.search); if (!m) return;
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    startJoin(); $('rJoinInput').value = m[1]; setTimeout(doJoin, 400); })();
 
   if ('serviceWorker' in navigator) { try { navigator.serviceWorker.register('sw.js'); } catch (e) {} }
 })();

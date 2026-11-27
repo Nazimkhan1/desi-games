@@ -37,7 +37,9 @@
 
   DG.register('saanp', {
     mount: function (wrap, opts) {
-      var mode = opts.mode, pos = [1,1], turn = 0, over = false, rolling = false;
+      var mode = opts.mode, pos = [1,1], turn = 0, over = false, rolling = false, busy = false;
+      var net = opts.net || null, me = (mode==='online') ? (opts.role==='host' ? 0 : 1) : 0;
+      function mine(){ return mode==='online' ? turn===me : (mode==='ai' ? turn===0 : true); }
       var cellByNum = {};
 
       var pcards = document.createElement('div'); pcards.className = 'ss-players';
@@ -46,7 +48,7 @@
       var area = document.createElement('div'); area.className = 'ss-wrap';
       wrap.appendChild(area); area.appendChild(pcards); area.appendChild(boardEl); area.appendChild(dice);
 
-      function pname(i){ var t=DG.t(); if(mode==='ai') return i===0? t.you : t.computer; return i===0? t.p1 : t.p2; }
+      function pname(i){ var t=DG.t(); if(mode==='online') return i===me? t.you : ((opts.opp&&opts.opp.name)||t.navFriends); if(mode==='ai') return i===0? t.you : t.computer; return i===0? t.p1 : t.p2; }
 
       function buildBoard(){
         boardEl.innerHTML=''; cellByNum={};
@@ -65,14 +67,15 @@
         pcards.innerHTML='';
         for (var i=0;i<2;i++){ var el=document.createElement('div'); el.className='ss-pcard'+(turn===i?' turn':'');
           el.innerHTML='<span class="d" style="background:'+COL[i]+'"></span>'+pname(i); pcards.appendChild(el); }
-        dice.disabled = over || rolling || (mode==='ai' && turn===1);
+        dice.disabled = over || rolling || !mine();
       }
 
       function finish(){
-        over=true; DG.result(mode==='ai' && turn===1 ? 'lose' : 'win'); var t=DG.t(); var txt = (mode==='ai') ? (turn===0? t.youWin : t.youLose) : t.wins(pname(turn));
+        over=true; var t=DG.t(), won = mode==='pass' || turn===(mode==='online'?me:0);
+        DG.result(won ? 'win' : 'lose'); var txt = (mode==='pass') ? t.wins(pname(turn)) : (won ? t.youWin : t.youLose);
         var r=document.createElement('div'); r.className='kk-result'; r.innerHTML='<div class="rt">'+txt+'</div>';
         var acts=document.createElement('div'); acts.className='kk-actions';
-        var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=start;
+        var again=document.createElement('button'); again.className='kk-btn'; again.textContent=t.rematch; again.onclick=function(){ if (mode==='online' && net) net.send('reset', {}); start(); };
         var exit=document.createElement('button'); exit.className='kk-btn ghost'; exit.textContent=t.exitGame; exit.onclick=function(){ opts.onExit&&opts.onExit(); };
         acts.appendChild(again); acts.appendChild(exit); r.appendChild(acts);
         area.innerHTML=''; area.appendChild(r);
@@ -90,24 +93,30 @@
         }, 260);
       }
       function nextIfNeeded(d){
+        busy=false;
         if (d !== 6){ turn = turn===0?1:0; }
         renderCards();
-        if (mode==='ai' && turn===1 && !over){ setTimeout(roll, 600); }
+        if (mode==='ai' && turn===1 && !over){ setTimeout(function(){ roll(); }, 600); }
       }
 
-      function roll(){
+      function roll(given){
         if (over || rolling) return;
-        rolling=true; dice.classList.add('roll'); renderCards(); DG.sfx('dice');
-        var d = 1 + Math.floor(Math.random()*6);
+        rolling=true; busy=true; dice.classList.add('roll'); renderCards(); DG.sfx('dice');
+        var d = given || (1 + Math.floor(Math.random()*6));
+        if (mode==='online' && net && !given) net.send('roll', {d:d});
         setTimeout(function(){
           dice.classList.remove('roll'); dice.innerHTML = diceFace(d);
           rolling=false; if (d===6) DG.sfx('bonus'); step(d);
         }, 450);
       }
-      dice.onclick = function(){ if (!(mode==='ai' && turn===1)) roll(); };
+      dice.onclick = function(){ if (mine()) roll(); };
+      if (mode==='online' && net){
+        net.on('roll', function apply(m){ if (busy){ setTimeout(function(){ apply(m); }, 120); return; } if (!over && !mine() && m.d>=1 && m.d<=6) roll(m.d); });
+        net.on('reset', function(){ start(); });
+      }
 
       function start(){
-        pos=[1,1]; turn=0; over=false; rolling=false;
+        pos=[1,1]; turn=0; over=false; rolling=false; busy=false;
         area.innerHTML=''; area.appendChild(pcards); area.appendChild(boardEl); area.appendChild(dice);
         dice.textContent='🎲'; buildBoard(); renderTokens(); renderCards();
       }

@@ -55,3 +55,45 @@ Ab app online chalega: ek phone **रूम बनाओ** → code dost ko bhej
 
 ### Note (security)
 `firebase-config.js` ke values **public** hote hain (web app me dikhte hi hain) — yeh secret nahi, normal hai. Asli protection Database **Rules** se aati hai (step 2).
+
+---
+## 6. Gmail login + cloud save + sabki rank (28 Nov 2026) — ek baar karna hai
+
+Login **optional** hai: bina login sab waise hi chalta hai. Jo Gmail se login karta hai uska record
+`users/{uid}` mein hamesha ke liye save hota hai, aur naam/chehra/XP `lb/{uid}` (sabki rank) mein.
+
+### 6a. Google sign-in chalu karo
+1. Firebase console → **Build → Authentication → Sign-in method**
+2. **Add new provider → Google** → Enable → *Project support email* mein apna Gmail chuno → **Save**
+3. **Settings → Authorized domains** mein `desi-games.nextgrade.in` aur `localhost` hone chahiye (pehle se hain).
+
+### 6b. Database rules badlo
+**Build → Realtime Database → Rules** — poora yeh paste karo → **Publish**:
+```json
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider === 'google.com'"
+      }
+    },
+    "lb": {
+      ".read": true,
+      ".indexOn": ["xp"],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider === 'google.com'",
+        ".validate": "newData.hasChildren(['name', 'xp']) && newData.child('name').isString() && newData.child('name').val().length <= 16 && newData.child('xp').isNumber() && newData.child('xp').val() >= 0 && newData.child('xp').val() <= 1000000"
+      }
+    }
+  }
+}
+```
+- `users/{uid}`: sirf wahi user apna record padh/likh sakta hai.
+- `lb`: sab padh sakte hain (rank list), par har koi sirf apni line likh sakta hai. Gmail pata kabhi save nahi hota — sirf app wala naam, chehra, XP, level, jeet.
